@@ -8,17 +8,17 @@ public class Main {
     Scanner input = new Scanner( System.in );
 
     System.out.println("Hello! What would you like to do today? Enter here:  ");
-    // Sample: add
-    // call add
 
     String userCmd = input.next();
 
+    // Handle user input
     switch(userCmd) {
       case "help" -> help();
       case "add" -> add(input);
       case "list" -> Query.listChapters();
       case "delete" -> delete(input);
     }
+    // Close the scanner when we're done
     input.close();
   }
 
@@ -44,11 +44,6 @@ public class Main {
     System.out.println("Sick, so what do you wanna add? ");
     addInput = addScanner.next();
 
-    while (addScanner.hasNext()) {
-      addInput += addScanner.next();
-    }
-    // student, chapter, or completed chapter
-    // do something when we have a function for adding a chapter
     switch (addInput) {
       case "student" -> {
         // Get user input for the student's name
@@ -59,22 +54,34 @@ public class Main {
 
         Query.getCompletedChapters(firstName, lastName);
       }
-      // CHAPTER AND COMPLETED CHAPTER DON'T WORK (IT'S DOING THE NEWLINE EATING THING)
-      case "chapter" -> {
-        System.out.println("Not implemented yet, sorry ;~;");
-        addScanner.next();
-        addScanner.close();
-      }
-      case "completed chapter" -> {
-        // Get the student's first and last name
-        System.out.println("What is the student's name? First name please: ");
-        firstName = addScanner.next();
-        System.out.println("Last name please: ");
-        lastName = addScanner.next();
 
-        System.out.println("Chapter number please: ");
-        Long chapterId = addScanner.nextLong();
-        InsertCompletedChapter.addCompletedChapter(firstName, lastName, chapterId);
+      case "chapter" -> {
+        System.out.println("would you like to add a new chapter or a completed chapter? ");
+        String answer = addScanner.next();
+        if (answer.equals("new")) {
+          Long chapterId;
+          String chapterTitle;
+
+          System.out.println("What is the chapter number? ");
+          chapterId = addScanner.nextLong();
+
+          System.out.println("What is the chapter name? ");
+          addScanner.nextLine();
+          chapterTitle = addScanner.nextLine();
+
+          Add.addChapter(chapterId, chapterTitle);
+
+        } else if (answer.equals("completed")) {
+          // Get the student's first and last name
+          System.out.println("What is the student's name? First name please: ");
+          firstName = addScanner.next();
+          System.out.println("Last name please: ");
+          lastName = addScanner.next();
+
+          System.out.println("Chapter number please: ");
+          Long chapterId = addScanner.nextLong();
+          Add.addCompletedChapter(firstName, lastName, chapterId);
+        }
       }
     }
   }
@@ -83,6 +90,7 @@ public class Main {
     // call some delete method from the class
     System.out.println("What would you like to delete? ");
     String deleteInput = deleteScanner.next();
+    System.out.println(deleteInput);
 
     // I'll have to make queries to remove students from the students table, but also from the
     // student_progress table (same for chapters)
