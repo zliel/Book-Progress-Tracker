@@ -53,9 +53,7 @@ public class Add {
       System.out.println("Table successfully updated!");
 
       // Cleanup - close the Statement object to free up resources
-      if (statement != null) {
-        statement.close();
-      }
+      statement.close();
 
       // Cleanup - close the Connection object to free up resources
       conn.close();
@@ -95,9 +93,7 @@ public class Add {
       System.out.println("Table successfully updated!");
 
       // Cleanup - close the Statement object to free up resources
-      if (statement != null) {
-        statement.close();
-      }
+      statement.close();
 
       // Cleanup - close the Connection object to free up resources
       conn.close();

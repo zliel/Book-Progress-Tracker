@@ -52,14 +52,10 @@ public class Query {
       }
 
       // Cleanup - close the ResultSet object to free up resources
-      if (results != null) {
-        results.close();
-      }
+      results.close();
 
       // Cleanup - close the Statement object to free up resources
-      if (statement != null) {
-        statement.close();
-      }
+      statement.close();
 
       // Cleanup - close the Connection object to free up resources
       conn.close();
@@ -97,14 +93,10 @@ public class Query {
       }
 
       // Cleanup - close the ResultSet object to free up resources
-      if (results != null) {
-        results.close();
-      }
+      results.close();
 
       // Cleanup - close the Statement object to free up resources
-      if (statement != null) {
-        statement.close();
-      }
+      statement.close();
 
       // Cleanup - close the Connection object to free up resources
       conn.close();
