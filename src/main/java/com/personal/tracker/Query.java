@@ -14,10 +14,6 @@ import java.sql.*;
  */
 public class Query {
   public static void getCompletedChapters(String firstName, String lastName) {
-    // Retrieve the student's first and last names from the args passed in
-    String studentFirstName = firstName;
-    String studentLastName = lastName;
-
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
     PreparedStatement statement;
@@ -25,20 +21,20 @@ public class Query {
     // Initialize the string to hold the query
     String sqlQuery =
       "SELECT sprog.COMPLETION_DATE, c.CHAPTER_ID, c.CHAPTER_TITLE " +
-      "FROM chapter AS c, student_progress AS sprog " +
-      "WHERE " +
-      "(SELECT STUDENT_ID FROM student WHERE FIRST_NAME = ? " + " AND LAST_NAME = ? ) " + "= sprog.STUDENT_ID " +
-      "AND c.CHAPTER_ID = sprog.CHAPTER_ID";
+        "FROM chapter AS c, student_progress AS sprog " +
+        "WHERE " +
+        "(SELECT STUDENT_ID FROM student WHERE FIRST_NAME = ? " + " AND LAST_NAME = ? ) " + "= sprog.STUDENT_ID " +
+        "AND c.CHAPTER_ID = sprog.CHAPTER_ID";
 
-    // Try block (because jdbc methods can throw SQLException exceptions
+    // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
       conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.prepareStatement(sqlQuery);
-      statement.setString(1, studentFirstName);
-      statement.setString(2, studentLastName);
+      statement.setString(1, firstName);
+      statement.setString(2, lastName);
 
       // Make a ResultSet object to store the query results
       // Error was found here -> you don't pass the sqlQuery string to executeQuery with a
@@ -46,7 +42,7 @@ public class Query {
       ResultSet results = statement.executeQuery();
 
       // Header containing the student's name
-      System.out.printf("\n%s %s\n", studentFirstName.toUpperCase(), studentLastName.toUpperCase());
+      System.out.printf("\n%s %s\n", firstName.toUpperCase(), lastName.toUpperCase());
 
       while (results.next()) {
         // Retrieve the data from each column and print out the result
