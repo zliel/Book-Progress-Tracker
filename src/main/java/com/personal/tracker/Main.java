@@ -87,12 +87,16 @@ public class Main {
   }
 
   public static void delete(Scanner deleteScanner) {
-    // call some delete method from the class
+    // Get user input for what they want to delete (currently only "chapter" works)
     System.out.println("What would you like to delete? ");
     String deleteInput = deleteScanner.next();
-    System.out.println(deleteInput);
 
-    // I'll have to make queries to remove students from the students table, but also from the
-    // student_progress table (same for chapters)
+    if (deleteInput.equals("chapter")) {
+      // Get input for which chapter should be deleted
+      System.out.println("Enter the chapter number of the chapter you'd like to delete: ");
+      Long chapterId = deleteScanner.nextLong();
+
+      Delete.deleteChapter(chapterId);
+    }
   }
 }
