@@ -75,9 +75,7 @@ public class Query {
     }
   }
 
-  /**
-   * This method returns all of the chapters stored in the database, including their IDs and titles.
-   */
+  /** This method returns all of the rows in the Chapters table in the database */
   public static void listChapters() {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
@@ -102,6 +100,49 @@ public class Query {
         // Retrieve the data from each column and print out the result
         System.out.printf("%d \t", results.getLong("CHAPTER_ID"));
         System.out.printf("%s \n", results.getString("CHAPTER_TITLE"));
+      }
+
+      // Cleanup - close the ResultSet object to free up resources
+      results.close();
+
+      // Cleanup - close the Statement object to free up resources
+      statement.close();
+
+      // Cleanup - close the Connection object to free up resources
+      conn.close();
+
+    } catch (SQLException sqle) {
+      // If there's an Exception, print out the stack trace so we can figure out what's up
+      sqle.printStackTrace();
+    }
+  }
+
+  /** This method returns all of the rows from the Student table in the database */
+  public static void listStudents() {
+    // Initialize the Connection and PreparedStatement objects
+    Connection conn;
+    Statement statement;
+
+    // Initialize the string to hold the query
+    String sqlQuery = "SELECT STUDENT_ID, FIRST_NAME, LAST_NAME FROM STUDENT";
+
+    // Try block (because jdbc methods can throw SQLException exceptions
+    try {
+      // Make a connection to the database
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
+
+      // Make a preparedStatement and fill in the blanks
+      statement = conn.createStatement();
+
+
+      // Make a ResultSet object to store the query results
+      ResultSet results = statement.executeQuery(sqlQuery);
+
+      while (results.next()) {
+        // Retrieve the data from each column and print out the result
+        System.out.printf("%d \t", results.getLong("STUDENT_ID"));
+        System.out.printf("%s ", results.getString("FIRST_NAME"));
+        System.out.printf("%s \n", results.getString("LAST_NAME"));
       }
 
       // Cleanup - close the ResultSet object to free up resources
