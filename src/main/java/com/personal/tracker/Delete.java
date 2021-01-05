@@ -5,7 +5,17 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * This class handles all queries related to deleting something from the database
+ */
 public class Delete {
+
+  /**
+   * This method deletes a chapter from the Chapter table, as well as the Student Progress table
+   * if it's been completed
+   *
+   * @param chapterId The ID of the chapter to be removed
+   */
   public static void deleteChapter(Long chapterId) {
     // Eventually I'll need to add another arg to include book id when the book table is made
     // Initialize the Connection and PreparedStatement objects

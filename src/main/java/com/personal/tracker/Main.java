@@ -2,6 +2,9 @@ package com.personal.tracker;
 
 import java.util.Scanner;
 
+/**
+ * This class executes the program, handling user input
+ */
 public class Main {
   public static void main(String[] args) {
     // Initialize Scanner object for user input
@@ -22,20 +25,23 @@ public class Main {
     input.close();
   }
 
+  /** This method handles the "help" command, showing the user what possible commands there are */
   public static void help() {
     // Print out all available commands
-    // Add chapter
-    // Add completed chapter
-    // Add student
-    // Find student
-    // list chapters
     System.out.println("Possible commands: ");
     System.out.println("add: Add a student, chapter, or completed chapter to the tracker.");
     System.out.println("\nlist: List all chapters.");
-    System.out.println("\ndelete: (not implemented yet) Delete a student, chapter, or completed " +
-      "chapter from the tracker.");
+    System.out.println("\ndelete: Delete a student, chapter, or completed chapter from the tracker.");
+    // main(new String[]{""}); //uncommenting this will make help() restart the program; it'd
+    // need to be tested
   }
 
+  /**
+   * This method handles the "add" command, letting the user add chapters, students, or completed
+   * chapters based on input.
+   *
+   * @param addScanner The Scanner object passed in by the main() method
+   */
   public static void add(Scanner addScanner) {
     String firstName;
     String lastName;
@@ -86,6 +92,11 @@ public class Main {
     }
   }
 
+  /**
+   * This method handles the "delete" command, letting the user remove chapters from the database
+   *
+   * @param deleteScanner The Scanner object passed in by the main() method
+   */
   public static void delete(Scanner deleteScanner) {
     // Get user input for what they want to delete (currently only "chapter" works)
     System.out.println("What would you like to delete? ");

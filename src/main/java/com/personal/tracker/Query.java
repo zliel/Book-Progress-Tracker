@@ -9,14 +9,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * This program will query my h2 database to track a student's progress (although currently I am
- * the only student)
+ * This class will handle any queries related to retrieving information
  *
  * @author Zac Liel
  * @version 0.1
  * @since 12-31-2020
  */
 public class Query {
+
+  /**
+   * This method makes a query to the embedded database, retrieving all of the chapters completed
+   * by the student
+   *
+   * @param firstName The first name of the student we're searching for
+   * @param lastName The last name of the student we're searching for
+   */
   public static void getCompletedChapters(String firstName, String lastName) {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
@@ -41,8 +48,6 @@ public class Query {
       statement.setString(2, lastName);
 
       // Make a ResultSet object to store the query results
-      // Error was found here -> you don't pass the sqlQuery string to executeQuery with a
-      // PreparedStatement
       ResultSet results = statement.executeQuery();
 
       // Header containing the student's name
@@ -70,6 +75,9 @@ public class Query {
     }
   }
 
+  /**
+   * This method returns all of the chapters stored in the database, including their IDs and titles
+   */
   public static void listChapters() {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;

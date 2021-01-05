@@ -8,13 +8,21 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 /**
- * This program will insert a row into my h2 database to mark a chapter as having been completed
+ * This class handles all queries related to adding things to the database
  *
  * @author Zac Liel
  * @version 0.1
  * @since 12-31-2020
  */
 public class Add {
+
+  /**
+   * This method adds a completed chapter to the Student_Progress table
+   *
+   * @param firstName The first name of the student who completed the chapter
+   * @param lastName The last name of the student who completed the chapter
+   * @param chapterId The ID of the chapter that's been completed
+   */
   public static void addCompletedChapter(String firstName, String lastName, Long chapterId) {
     LocalDate date = LocalDate.now();
 
@@ -59,6 +67,12 @@ public class Add {
     }
   }
 
+  /**
+   * This method adds a chapter to the Chapter table in the database
+   *
+   * @param chapterId The ID of the chapter to add
+   * @param chapterTitle The title of the chapter to add
+   */
   public static void addChapter(Long chapterId, String chapterTitle) {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
