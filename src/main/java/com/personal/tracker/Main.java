@@ -3,7 +3,7 @@ package com.personal.tracker;
 import java.util.Scanner;
 
 /**
- * This class executes the program, handling user input
+ * This class executes the program, handling user input.
  */
 public class Main {
   public static void main(String[] args) {
@@ -40,7 +40,7 @@ public class Main {
    * This method handles the "add" command, letting the user add chapters, students, or completed
    * chapters based on input.
    *
-   * @param addScanner The Scanner object passed in by the main() method
+   * @param addScanner The Scanner object passed in by the main() method.
    */
   public static void add(Scanner addScanner) {
     String firstName;
@@ -58,7 +58,7 @@ public class Main {
         System.out.println("Last name please: ");
         lastName = addScanner.next();
 
-        Query.getCompletedChapters(firstName, lastName);
+        Add.addStudent(firstName, lastName);
       }
 
       case "chapter" -> {
@@ -93,9 +93,9 @@ public class Main {
   }
 
   /**
-   * This method handles the "delete" command, letting the user remove chapters from the database
+   * This method handles the "delete" command, letting the user remove chapters from the database.
    *
-   * @param deleteScanner The Scanner object passed in by the main() method
+   * @param deleteScanner The Scanner object passed in by the main() method.
    */
   public static void delete(Scanner deleteScanner) {
     // Get user input for what they want to delete (currently only "chapter" works)
@@ -108,6 +108,18 @@ public class Main {
       Long chapterId = deleteScanner.nextLong();
 
       Delete.deleteChapter(chapterId);
+    } else if (deleteInput.equals("student")) {
+
+      System.out.println("Which student would you like to delete? Enter their first name: ");
+      String studentFirstName = deleteScanner.next();
+      System.out.println("Enter their last name: ");
+      String studentLastName = deleteScanner.next();
+      Long studentId = Delete.getStudentId(studentFirstName, studentLastName);
+      if (studentId == null) {
+        System.out.println("Sorry, the student wasn't found.");
+      } else {
+        Delete.deleteStudent(studentId);
+      }
     }
   }
 }
