@@ -1,8 +1,12 @@
 package com.personal.tracker;
 
 // Imports
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * This program will query my h2 database to track a student's progress (although currently I am
@@ -72,7 +76,7 @@ public class Query {
     Statement statement;
 
     // Initialize the string to hold the query
-    String sqlQuery = "SELECT * FROM CHAPTER";
+    String sqlQuery = "SELECT CHAPTER_ID, CHAPTER_TITLE FROM CHAPTER";
 
     // Try block (because jdbc methods can throw SQLException exceptions
     try {
