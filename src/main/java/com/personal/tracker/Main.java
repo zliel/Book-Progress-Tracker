@@ -18,7 +18,7 @@ public class Main {
     switch(userCmd) {
       case "help" -> help();
       case "add" -> add(input);
-      case "list" -> Query.listChapters();
+      case "list" -> list(input);
       case "delete" -> delete(input);
     }
     // Close the scanner when we're done
@@ -29,9 +29,9 @@ public class Main {
   public static void help() {
     // Print out all available commands
     System.out.println("Possible commands: ");
-    System.out.println("add: Add a student, chapter, or completed chapter to the tracker.");
-    System.out.println("\nlist: List all chapters.");
-    System.out.println("\ndelete: Delete a student, chapter, or completed chapter from the tracker.");
+    System.out.println("\tadd: Add a student, chapter, or completed chapter to the tracker.");
+    System.out.println("\n\tlist: List all chapters.");
+    System.out.println("\n\tdelete: Delete a student, chapter, or completed chapter from the tracker.");
     // main(new String[]{""}); //uncommenting this will make help() restart the program; it'd
     // need to be tested
   }
@@ -64,7 +64,7 @@ public class Main {
       case "chapter" -> {
         System.out.println("would you like to add a new chapter or a completed chapter? ");
         String answer = addScanner.next();
-        if (answer.equals("new")) {
+        if (answer.equalsIgnoreCase("new")) {
           Long chapterId;
           String chapterTitle;
 
@@ -108,7 +108,7 @@ public class Main {
       Long chapterId = deleteScanner.nextLong();
 
       Delete.deleteChapter(chapterId);
-    } else if (deleteInput.equals("student")) {
+    } else if (deleteInput.equalsIgnoreCase("student")) {
 
       System.out.println("Which student would you like to delete? Enter their first name: ");
       String studentFirstName = deleteScanner.next();
@@ -120,6 +120,30 @@ public class Main {
       } else {
         Delete.deleteStudent(studentId);
       }
+    }
+  }
+
+  /** This method handles the "list" command, letting the user list either the students or
+   * chapters in the database.
+   *
+   * @param listScanner The Scanner object passed in by the main() method
+   */
+  public static void list(Scanner listScanner) {
+    // Get user input for what they would like to list
+    System.out.println("Would you like to list the chapters or students?");
+    String answer = listScanner.next();
+
+    // Handle the response accordingly
+    if (answer.equalsIgnoreCase("chapters")) {
+      Query.listChapters();
+    } else if (answer.equalsIgnoreCase("students")) {
+      Query.listStudents();
+    } else if (answer.equalsIgnoreCase("completed")) {
+      System.out.println("Enter the student's first name: ");
+      String firstName = listScanner.next();
+      System.out.println("Enter the student's last name: ");
+      String lastName = listScanner.next();
+      Query.getCompletedChapters(firstName, lastName);
     }
   }
 }
