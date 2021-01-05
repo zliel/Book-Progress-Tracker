@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * This class will handle any queries related to retrieving information
+ * This class will handle any queries related to retrieving information.
  *
  * @author Zac Liel
  * @version 0.1
@@ -19,10 +19,10 @@ public class Query {
 
   /**
    * This method makes a query to the embedded database, retrieving all of the chapters completed
-   * by the student
+   * by the student.
    *
-   * @param firstName The first name of the student we're searching for
-   * @param lastName The last name of the student we're searching for
+   * @param firstName The first name of the student we're searching for.
+   * @param lastName The last name of the student we're searching for.
    */
   public static void getCompletedChapters(String firstName, String lastName) {
     // Initialize the Connection and PreparedStatement objects
@@ -76,7 +76,7 @@ public class Query {
   }
 
   /**
-   * This method returns all of the chapters stored in the database, including their IDs and titles
+   * This method returns all of the chapters stored in the database, including their IDs and titles.
    */
   public static void listChapters() {
     // Initialize the Connection and PreparedStatement objects
