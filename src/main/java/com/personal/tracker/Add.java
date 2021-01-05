@@ -1,6 +1,10 @@
 package com.personal.tracker;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 /**
@@ -13,15 +17,6 @@ import java.time.LocalDate;
 public class Add {
   public static void addCompletedChapter(String firstName, String lastName, Long chapterId) {
     LocalDate date = LocalDate.now();
-    /* ARGS
-    1. Student's first name
-    2. Student's last name
-    3. Chapter Number (ID) of the chapter that's been completed
-     */
-
-    //    String studentFirstName = firstName;
-    //    String studentLastName = lastName;
-    //    Long chapterId = chapter;
 
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
@@ -34,7 +29,7 @@ public class Add {
         "VALUES " +
         "((SELECT STUDENT_ID FROM student WHERE FIRST_NAME = ? AND LAST_NAME = ?), ?, ?)";
 
-    // Try block (because jdbc methods can throw SQLException exceptions
+    // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
       conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
