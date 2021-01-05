@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 /**
- * This class handles all queries related to adding things to the database
+ * This class handles all queries related to adding things to the database.
  *
  * @author Zac Liel
  * @version 0.1
@@ -17,11 +17,11 @@ import java.time.LocalDate;
 public class Add {
 
   /**
-   * This method adds a completed chapter to the Student_Progress table
+   * This method adds a completed chapter to the Student_Progress table.
    *
-   * @param firstName The first name of the student who completed the chapter
-   * @param lastName The last name of the student who completed the chapter
-   * @param chapterId The ID of the chapter that's been completed
+   * @param firstName The first name of the student who completed the chapter.
+   * @param lastName The last name of the student who completed the chapter.
+   * @param chapterId The ID of the chapter that's been completed.
    */
   public static void addCompletedChapter(String firstName, String lastName, Long chapterId) {
     LocalDate date = LocalDate.now();
@@ -68,10 +68,10 @@ public class Add {
   }
 
   /**
-   * This method adds a chapter to the Chapter table in the database
+   * This method adds a chapter to the Chapter table in the database.
    *
-   * @param chapterId The ID of the chapter to add
-   * @param chapterTitle The title of the chapter to add
+   * @param chapterId The ID of the chapter to add.
+   * @param chapterTitle The title of the chapter to add.
    */
   public static void addChapter(Long chapterId, String chapterTitle) {
     // Initialize the Connection and PreparedStatement objects
@@ -95,6 +95,53 @@ public class Add {
       statement = conn.prepareStatement(sqlQuery);
       statement.setLong(1, chapterId);
       statement.setString(2, chapterTitle);
+
+      // Execute the update and count the new rows
+      int newRowCount = statement.executeUpdate();
+      System.out.printf("%d row(s) added.\n", newRowCount);
+      System.out.println("Table successfully updated!");
+
+      // Cleanup - close the Statement object to free up resources
+      statement.close();
+
+      // Cleanup - close the Connection object to free up resources
+      conn.close();
+
+    } catch (SQLException sqle) {
+      // If there's an Exception, print out the stack trace so we can figure out what's up
+      sqle.printStackTrace();
+    }
+  }
+
+  /**
+   * This method adds a student to the Student table in the database.
+   *
+   * @param firstName The first name of the new student.
+   * @param lastName The last name of the new student.
+   */
+  public static void addStudent(String firstName, String lastName) {
+    // Initialize the Connection and PreparedStatement objects
+    Connection conn;
+    PreparedStatement statement;
+
+    // Initialize the string to hold the query
+    String sqlQuery =
+        "INSERT INTO STUDENT" +
+            "(FIRST_NAME, LAST_NAME)" +
+            "VALUES" +
+            "(?, ?)";
+
+    // Try block (because jdbc methods can throw SQLException exceptions)
+    try {
+      // Make a connection to the database
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
+          "sa", "");
+
+      // Make a preparedStatement and fill in the blanks
+      statement = conn.prepareStatement(sqlQuery);
+      statement.setString(1, firstName);
+      statement.setString(2, lastName);
+
 
       // Execute the update and count the new rows
       int newRowCount = statement.executeUpdate();
