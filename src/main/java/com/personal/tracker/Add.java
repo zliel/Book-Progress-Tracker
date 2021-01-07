@@ -21,9 +21,10 @@ public class Add {
    *
    * @param firstName The first name of the student who completed the chapter.
    * @param lastName The last name of the student who completed the chapter.
-   * @param chapterId The ID of the chapter that's been completed.
+   * @param chapterNumber The ID of the chapter that's been completed.
    */
-  public static void addCompletedChapter(String firstName, String lastName, Long chapterId) {
+  public static void addCompletedChapter(String firstName, String lastName, Long chapterNumber,
+                                         String book) {
     LocalDate date = LocalDate.now();
 
     // Initialize the Connection and PreparedStatement objects
@@ -33,9 +34,10 @@ public class Add {
     // Initialize the string to hold the query
     String sqlQuery =
       "INSERT INTO student_progress " +
-        "(STUDENT_ID, CHAPTER_ID, COMPLETION_DATE) " +
+        "(STUDENT_ID, CHAPTER_NUMBER, COMPLETION_DATE, BOOK, CHAPTER_TITLE) " +
         "VALUES " +
-        "((SELECT STUDENT_ID FROM student WHERE FIRST_NAME = ? AND LAST_NAME = ?), ?, ?)";
+        "((SELECT STUDENT_ID FROM student WHERE FIRST_NAME = ? AND LAST_NAME = ?), ?, ?, ?, " +
+          "(SELECT CHAPTER_TITLE FROM CHAPTER WHERE CHAPTER_NUMBER = ? AND BOOK = ?))";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
@@ -47,8 +49,11 @@ public class Add {
       statement = conn.prepareStatement(sqlQuery);
       statement.setString(1, firstName);
       statement.setString(2, lastName);
-      statement.setLong(3, chapterId);
+      statement.setLong(3, chapterNumber);
       statement.setDate(4, Date.valueOf(date));
+      statement.setString(5, book);
+      statement.setLong(6, chapterNumber);
+      statement.setString(7, book);
 
       // Execute the update and count the new rows
       int newRowCount = statement.executeUpdate();
@@ -73,7 +78,7 @@ public class Add {
    * @param chapterId The ID of the chapter to add.
    * @param chapterTitle The title of the chapter to add.
    */
-  public static void addChapter(Long chapterId, String chapterTitle) {
+  public static void addChapter(Long chapterId, String chapterTitle, String book) {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
     PreparedStatement statement;
@@ -81,9 +86,9 @@ public class Add {
     // Initialize the string to hold the query
     String sqlQuery =
       "INSERT INTO CHAPTER" +
-        "(CHAPTER_ID, CHAPTER_TITLE)" +
+        "(CHAPTER_NUMBER, CHAPTER_TITLE, BOOK)" +
         "VALUES" +
-        "(?, ?)";
+        "(?, ?, ?)";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
@@ -95,6 +100,7 @@ public class Add {
       statement = conn.prepareStatement(sqlQuery);
       statement.setLong(1, chapterId);
       statement.setString(2, chapterTitle);
+      statement.setString(3, book);
 
       // Execute the update and count the new rows
       int newRowCount = statement.executeUpdate();

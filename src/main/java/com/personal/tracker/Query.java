@@ -31,11 +31,11 @@ public class Query {
 
     // Initialize the string to hold the query
     String sqlQuery =
-      "SELECT sprog.COMPLETION_DATE, c.CHAPTER_ID, c.CHAPTER_TITLE " +
+      "SELECT sprog.COMPLETION_DATE, c.CHAPTER_NUMBER, c.CHAPTER_TITLE, c.BOOK " +
         "FROM chapter AS c, student_progress AS sprog " +
         "WHERE " +
         "(SELECT STUDENT_ID FROM student WHERE FIRST_NAME = ? " + " AND LAST_NAME = ? ) " + "= sprog.STUDENT_ID " +
-        "AND c.CHAPTER_ID = sprog.CHAPTER_ID";
+        "AND c.CHAPTER_NUMBER = sprog.CHAPTER_NUMBER";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
@@ -56,8 +56,9 @@ public class Query {
       while (results.next()) {
         // Retrieve the data from each column and print out the result
         System.out.printf("%s \t", results.getDate("COMPLETION_DATE").toString());
-        System.out.printf("%d \t", results.getLong("CHAPTER_ID"));
-        System.out.printf("%s \n", results.getString("CHAPTER_TITLE"));
+        System.out.printf("%d \t|", results.getLong("CHAPTER_NUMBER"));
+        System.out.printf("%-55s \t|", results.getString("CHAPTER_TITLE"));
+        System.out.printf("%10s \n", results.getString("BOOK"));
       }
 
       // Cleanup - close the ResultSet object to free up resources
@@ -82,7 +83,8 @@ public class Query {
     Statement statement;
 
     // Initialize the string to hold the query
-    String sqlQuery = "SELECT CHAPTER_ID, CHAPTER_TITLE FROM CHAPTER";
+    String sqlQuery = "SELECT CHAPTER_NUMBER, CHAPTER_TITLE, BOOK FROM CHAPTER GROUP BY BOOK, " +
+        "CHAPTER_NUMBER";
 
     // Try block (because jdbc methods can throw SQLException exceptions
     try {
@@ -96,10 +98,16 @@ public class Query {
       // Make a ResultSet object to store the query results
       ResultSet results = statement.executeQuery(sqlQuery);
 
+      // Print out the header
+      System.out.printf("%s \t", "NUMBER");
+      System.out.printf("%-55s \t", "CHAPTER TITLE");
+      System.out.printf("%5s \n", "BOOK");
+
       while (results.next()) {
         // Retrieve the data from each column and print out the result
-        System.out.printf("%d \t", results.getLong("CHAPTER_ID"));
-        System.out.printf("%s \n", results.getString("CHAPTER_TITLE"));
+        System.out.printf("%d \t|", results.getLong("CHAPTER_NUMBER"));
+        System.out.printf("%-55s \t", results.getString("CHAPTER_TITLE"));
+        System.out.printf("%10s \n", "| " + results.getString("BOOK"));
       }
 
       // Cleanup - close the ResultSet object to free up resources
