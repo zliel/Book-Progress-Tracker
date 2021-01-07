@@ -7,7 +7,6 @@ This is a progress tracker I'm making to track my progress throughout different 
   * [Chapter Table](#chapter-table)
   * [Student_Progress](#student_progress)
 
-
 ## Table Structure
 The top levels have the column names and associated types
 
