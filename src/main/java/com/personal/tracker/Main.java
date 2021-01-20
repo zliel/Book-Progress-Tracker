@@ -6,7 +6,7 @@ import java.util.Scanner;
  * This class executes the program, handling user input.
  */
 public class Main {
-  public static void main(String[] args) {
+  public static void primary(String[] args) {
     // Initialize Scanner object for user input
     Scanner input = new Scanner( System.in );
 
