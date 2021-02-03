@@ -1,6 +1,7 @@
-package com.personal.tracker;
+package com.personal.tracker.controller;
 
 import java.util.Scanner;
+// DEPRECATED - WON'T BE USED IN THE GUI VERSION
 
 /**
  * This class executes the program, handling user input.

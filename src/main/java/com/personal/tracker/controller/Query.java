@@ -1,4 +1,4 @@
-package com.personal.tracker;
+package com.personal.tracker.controller;
 
 // Imports
 import com.personal.tracker.models.Chapter;

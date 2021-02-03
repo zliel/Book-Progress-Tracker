@@ -1,4 +1,4 @@
-package com.personal.tracker;
+package com.personal.tracker.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
