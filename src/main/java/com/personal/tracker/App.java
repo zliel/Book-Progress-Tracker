@@ -1,5 +1,6 @@
 package com.personal.tracker;
 
+import com.personal.tracker.controller.Query;
 import com.personal.tracker.models.Chapter;
 import com.personal.tracker.models.CompletedChapter;
 import com.personal.tracker.models.Student;
@@ -57,7 +58,7 @@ public class App extends Application {
   public static TableView<Student> createStudentTable() {
     // Move what's in start() here
     // Create a TableView for our database output
-    TableView<Student> studentTable = new TableView<Student>();
+    TableView<Student> studentTable = new TableView<>();
     // TODO - Look into getting data from the database into the table
 
     // Get an ArrayList with students from the database
