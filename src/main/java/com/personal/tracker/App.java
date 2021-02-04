@@ -4,6 +4,9 @@ import com.personal.tracker.controller.Query;
 import com.personal.tracker.models.Chapter;
 import com.personal.tracker.models.CompletedChapter;
 import com.personal.tracker.models.Student;
+import com.personal.tracker.views.ChaptersTab;
+import com.personal.tracker.views.CompletedChapterTab;
+import com.personal.tracker.views.StudentTab;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,27 +14,27 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class App extends Application {
-  /* TODO - Add inputs to each tab for adding new data to the table */
 
   @Override
   public void start(Stage stage) {
+    // Create our initial tables
     TableView<Student> studentTable = createStudentTable();
     TableView<Chapter> chapterTable = createChapterTable();
     TableView<CompletedChapter> completedChaptersTable = createCompletedChaptersTable();
+
 
     // Create a tabPane to choose which part of the database to view
     TabPane tabs = new TabPane();
 
     // Create tabs
-    Tab studentTab = new Tab("Students", studentTable);
-    Tab chapterTab = new Tab("Chapters", chapterTable);
-    Tab completedChaptersTab = new Tab("Completed Chapters", completedChaptersTable);
+    Tab studentTab = StudentTab.createStudentTab(studentTable);
+    Tab chapterTab = ChaptersTab.createChaptersTab(chapterTable);
+    Tab completedChaptersTab = CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable);
     Tab testTab = new Tab("Testing!", new Label("This is a test tab! :)"));
 
     // Add the tabs to the TabPane
@@ -42,13 +45,14 @@ public class App extends Application {
 
     // Create our scene
     Scene scene = new Scene(new StackPane(tabs), 1440, 900);
-    scene.setFill(Color.BLUEVIOLET);
+
+    // Add our CSS file to our scene (found in resources/com.personal.tracker/style.css)
+    scene.getStylesheets().add("com.personal.tracker/styles.css");
 
     // All the stuff for the actual stage
     stage.setTitle("Book Progress Tracker");
     stage.setScene(scene);
     stage.show();
-
   }
 
   public static void main(String[] args) {
@@ -59,7 +63,6 @@ public class App extends Application {
     // Move what's in start() here
     // Create a TableView for our database output
     TableView<Student> studentTable = new TableView<>();
-    // TODO - Look into getting data from the database into the table
 
     // Get an ArrayList with students from the database
     ArrayList<Student> students = Query.listStudents();
@@ -85,7 +88,6 @@ public class App extends Application {
   public static TableView<Chapter> createChapterTable() {
     // Create a TableView for our database output
     TableView<Chapter> chapterTable = new TableView<>();
-    // TODO - Look into getting data from the database into the table
 
     // Get an ArrayList with students from the database
     ArrayList<Chapter> students = Query.listChapters();
@@ -112,7 +114,6 @@ public class App extends Application {
   public static TableView<CompletedChapter> createCompletedChaptersTable() {
     // Create a TableView for our database output
     TableView<CompletedChapter> completedChaptersTable = new TableView<>();
-    // TODO - Look into getting data from the database into the table
 
     // Get an ArrayList with students from the database
     ArrayList<CompletedChapter> completedChapters = Query.listCompletedChapters();
