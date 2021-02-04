@@ -4,6 +4,20 @@
 <?import javafx.scene.layout.*?>
 
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.personal.tracker.controller.FXMLController">
-    <Label fx:id="label" text="Label" />
+    <Label fx:id="label" text="Label" StackPane.alignment="BOTTOM_LEFT" />
+   <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+     <tabs>
+       <Tab text="Untitled Tab 1">
+         <content>
+           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+         </content>
+       </Tab>
+       <Tab text="Untitled Tab 2">
+         <content>
+           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+         </content>
+       </Tab>
+     </tabs>
+   </TabPane>
 
 </StackPane>
