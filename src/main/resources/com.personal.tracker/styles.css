@@ -2,13 +2,14 @@
     -fx-text-fill: blue;
 }
 
+/* Styles for the tabs when selected */
 .tab-pane .tab:selected {
-    -fx-background-color: green;
+    -fx-background-color: darkslateblue;
 }
 
 .tab:selected .tab-label {
     -fx-text-fill: #fff;
-    -fx-background-color: green;
+    -fx-background-color: darkslateblue;
 }
 
 /* Styles for the submit buttons in the input forms */
