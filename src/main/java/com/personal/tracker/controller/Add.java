@@ -75,10 +75,10 @@ public class Add {
   /**
    * This method adds a chapter to the Chapter table in the database.
    *
-   * @param chapterId The ID of the chapter to add.
+   * @param chapterNum The ID of the chapter to add.
    * @param chapterTitle The title of the chapter to add.
    */
-  public static void addChapter(Long chapterId, String chapterTitle, String book) {
+  public static void addChapter(Long chapterNum, String chapterTitle, String book) {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
     PreparedStatement statement;
@@ -98,7 +98,7 @@ public class Add {
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.prepareStatement(sqlQuery);
-      statement.setLong(1, chapterId);
+      statement.setLong(1, chapterNum);
       statement.setString(2, chapterTitle);
       statement.setString(3, book);
 
