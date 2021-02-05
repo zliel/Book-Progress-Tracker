@@ -37,9 +37,6 @@ public class App extends Application {
     Tab completedChaptersTab = CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable);
     Tab testTab = new Tab("Testing!", new Label("This is a test tab! :)"));
 
-    // Set the first tab open (studentTab) our "current-tab" class
-    studentTab.getStyleClass().add("current-tab");
-
     // Add the tabs to the TabPane
     tabs.getTabs().add(studentTab);
     tabs.getTabs().add(chapterTab);
