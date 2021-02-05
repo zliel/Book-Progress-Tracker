@@ -32,7 +32,7 @@ public class ChaptersTab {
 
     // Creating our submit button and giving it a style rule
     Button submitButton = new Button("Add Row");
-    submitButton.setStyle("-fx-background-color: darkslateblue; -fx-text-fill: white");
+    submitButton.getStyleClass().add("submit-button");
 
     // Handle when the button is clicked
     submitButton.setOnAction(new EventHandler<>() {
@@ -46,7 +46,7 @@ public class ChaptersTab {
       }
     });
 
-    // TODO TESTING
+    // Create a VBox to store the Tab's contents
     final VBox vbox = new VBox();
     vbox.setSpacing(5);
     vbox.setPadding(new Insets(10, 10, 0, 10));

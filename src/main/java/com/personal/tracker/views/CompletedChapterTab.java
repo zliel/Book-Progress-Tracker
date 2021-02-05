@@ -31,7 +31,7 @@ public class CompletedChapterTab {
 
     // Creating our submit button and giving it a style rule
     Button submitButton = new Button("Add Row");
-    submitButton.setStyle("-fx-background-color: darkslateblue; -fx-text-fill: white");
+    submitButton.getStyleClass().add("submit-button");
 
     // Handle when the button is clicked
     submitButton.setOnAction(new EventHandler<>() {

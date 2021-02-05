@@ -11,8 +11,11 @@ import javafx.scene.layout.VBox;
 public class StudentTab {
   public static Tab createStudentTab(TableView<Student> students) {
     //Make text fields for each tab
-    TextField studentFirstNameField = new TextField("Student First Name");
-    TextField studentLastNameField = new TextField("Student Last Name");
+    TextField studentFirstNameField = new TextField();
+    studentFirstNameField.setPromptText("Student First Name");
+
+    TextField studentLastNameField = new TextField();
+    studentLastNameField.setPromptText("Student Last Name");
 
     // Labels for testing action handlers on buttons
     Label firstNameLabel = new Label();
@@ -20,7 +23,7 @@ public class StudentTab {
 
     // Creating our submit button and giving it a style rule
     Button submitButton = new Button("Submit");
-    submitButton.setStyle("-fx-background-color: darkslateblue; -fx-text-fill: white");
+    submitButton.getStyleClass().add("submit-button");
 
     // Handle when the button is clicked
     submitButton.setOnAction(new EventHandler<>() {
@@ -32,7 +35,7 @@ public class StudentTab {
       }
     });
 
-    // TODO TESTING
+    // Create a VBox to store the Tab's contents
     final VBox vbox = new VBox();
     vbox.setSpacing(5);
     vbox.setPadding(new Insets(10, 10, 0, 10));
