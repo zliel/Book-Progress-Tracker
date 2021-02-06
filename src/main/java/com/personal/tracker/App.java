@@ -29,34 +29,8 @@ public class App extends Application {
   @Override
   public void start(Stage stage) {
     // Check the config file to see if the database exists
-    try {
-      File config = new File("settings.txt");
-      if(!config.exists()) {
-        throw new FileNotFoundException("The file doesn't exist.");
-      }
-      Scanner configReader = new Scanner(config);
-
-      while(configReader.hasNextLine()) {
-        String data = configReader.nextLine();
-        if(data.equals("database_exists==False")) {
-          Add.createDatabase();
-        }
-        System.out.println(data);
-      }
-    } catch (FileNotFoundException fnf) {
-      File newConfig = new File("settings.txt");
-
-      try {
-        Add.createDatabase();
-        FileWriter configWriter = new FileWriter(newConfig);
-        configWriter.write("database_exists==True");
-        configWriter.flush();
-        configWriter.close();
-
-      } catch (IOException ioe) {
-        System.err.println("There was an IOException: " + ioe);
-      }
-    }
+    // TODO Put this in its own method that will be called at the start
+    initialize();
 
     // Create our initial tables
     TableView<Student> studentTable = createStudentTable();
@@ -68,8 +42,8 @@ public class App extends Application {
     TabPane tabs = new TabPane();
 
     // Create tabs
-    Tab studentTab = StudentTab.createStudentTab(studentTable);
-    Tab chapterTab = ChaptersTab.createChaptersTab(chapterTable);
+    Tab studentTab = StudentTab.createStudentTab(studentTable, completedChaptersTable);
+    Tab chapterTab = ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable);
     Tab completedChaptersTab = CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable);
     Tab testTab = new Tab("Testing!", new Label("This is a test tab! :)"));
 
@@ -145,6 +119,37 @@ public class App extends Application {
     // Set the data in the table
     chapterTable.getColumns().setAll(chapterNumCol, chapterTitleCol, bookTitleCol);
     return chapterTable;
+  }
+
+  public static void initialize() {
+    try {
+      File config = new File("settings.txt");
+      if(!config.exists()) {
+        throw new FileNotFoundException("The file doesn't exist.");
+      }
+      Scanner configReader = new Scanner(config);
+
+      while(configReader.hasNextLine()) {
+        String data = configReader.nextLine();
+        if(data.equals("database_exists==False")) {
+          Add.createDatabase();
+        }
+        System.out.println(data);
+      }
+    } catch (FileNotFoundException fnf) {
+      File newConfig = new File("settings.txt");
+
+      try {
+        Add.createDatabase();
+        FileWriter configWriter = new FileWriter(newConfig);
+        configWriter.write("database_exists==True");
+        configWriter.flush();
+        configWriter.close();
+
+      } catch (IOException ioe) {
+        System.err.println("There was an IOException: " + ioe);
+      }
+    }
   }
 
   public static TableView<CompletedChapter> createCompletedChaptersTable() {
