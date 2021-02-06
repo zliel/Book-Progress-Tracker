@@ -55,7 +55,6 @@ public class Delete {
       System.out.printf("%d row(s) deleted.\n", newRowCount);
       System.out.println("Student Progress Table successfully updated!");
 
-
       // Cleanup - close the Statement object to free up resources
       statement.close();
 
@@ -97,17 +96,6 @@ public class Delete {
       System.out.printf("Deleting Student %d from the Student table...\n", studentId);
       System.out.printf("%d row(s) deleted.\n", newRowCount);
       System.out.println("Student Table successfully updated!\n");
-
-      // Prepare the second query
-      sqlDeleteQuery = "DELETE FROM STUDENT_PROGRESS WHERE STUDENT_ID = ?";
-      statement = conn.prepareStatement(sqlDeleteQuery);
-      statement.setLong(1, studentId);
-
-      // Execute the update and count the new rows
-      newRowCount = statement.executeUpdate();
-      System.out.printf("Deleting Student %d from the Student Progress table...\n", studentId);
-      System.out.printf("%d row(s) deleted.\n", newRowCount);
-      System.out.println("Student Progress Table successfully updated!");
 
       // Cleanup - close the Statement object to free up resources
       statement.close();
@@ -162,7 +150,8 @@ public class Delete {
       return studentId;
     } catch (SQLException sqle) {
       // If there's an Exception, print out the stack trace so we can figure out what's up
-      sqle.printStackTrace();
+      //sqle.printStackTrace();
+      System.err.println("There was an sqle exception");
       return null;
     }
   }
