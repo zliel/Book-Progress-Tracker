@@ -2,6 +2,7 @@ package com.personal.tracker.views;
 
 import com.personal.tracker.controller.Add;
 import com.personal.tracker.controller.Delete;
+import com.personal.tracker.models.CompletedChapter;
 import com.personal.tracker.models.Student;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,9 +10,10 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import java.util.ListIterator;
 
 public class StudentTab {
-  public static Tab createStudentTab(TableView<Student> students) {
+  public static Tab createStudentTab(TableView<Student> students, TableView<CompletedChapter> completedChapters) {
     //Make input fields for each necessary piece of information for the database
     TextField studentFirstNameField = new TextField();
     studentFirstNameField.setPromptText("Student First Name");
@@ -53,10 +55,21 @@ public class StudentTab {
     // Adding delete functionality to our deleteButton
     deleteButton.setOnAction(e -> {
       Student selectedStudent = students.getSelectionModel().getSelectedItem();
-      students.getItems().remove(selectedStudent);
+      Long selectedStudentId = Delete.getStudentId(selectedStudent.getFirstName(), selectedStudent.getLastName());
 
-      Long selectedStudentId = Delete.getStudentId(selectedStudent.getFirstName(),
-          selectedStudent.getLastName());
+      students.getItems().remove(selectedStudent);
+      // Loop through the CompletedChapters TableView's Items and remove the ones with the same
+      // studentId as the student we're deleting
+      ListIterator<CompletedChapter> completedChapterIterator = completedChapters.getItems().listIterator();
+
+      while (completedChapterIterator.hasNext()) {
+        CompletedChapter currentChapter = completedChapterIterator.next();
+
+        if(currentChapter.studentIdIsEqual(selectedStudentId)) {
+          completedChapterIterator.remove();
+        }
+      }
+
       Delete.deleteStudent(selectedStudentId);
     });
 

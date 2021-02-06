@@ -3,15 +3,17 @@ package com.personal.tracker.views;
 import com.personal.tracker.controller.Add;
 import com.personal.tracker.controller.Delete;
 import com.personal.tracker.models.Chapter;
+import com.personal.tracker.models.CompletedChapter;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import java.util.ListIterator;
 
 public class ChaptersTab {
-  public static Tab createChaptersTab(TableView<Chapter> chapters) {
+  public static Tab createChaptersTab(TableView<Chapter> chapters, TableView<CompletedChapter> completedChapters) {
     //Make input fields for each necessary piece of information for the database
     TextField chapterTitleField = new TextField();
     chapterTitleField.setPromptText("Chapter Title");
@@ -45,6 +47,17 @@ public class ChaptersTab {
 
       // Remove the selected row from the TableView
       chapters.getItems().remove(selectedChapter);
+
+      // Loop through the CompletedChapters TableView and remove the ones that match the chapter we're deleting
+      ListIterator<CompletedChapter> completedChapterIterator = completedChapters.getItems().listIterator();
+
+      while (completedChapterIterator.hasNext()) {
+        CompletedChapter currentChapter = completedChapterIterator.next();
+
+        if(currentChapter.chapterIsEqual(selectedChapter.getChapterKey(), currentChapter.getBookTitle())) {
+          completedChapterIterator.remove();
+        }
+      }
 
       // Remove the Chapter from the database
       Delete.deleteChapter(selectedChapter.getChapterKey(), selectedChapter.getBookTitle());
