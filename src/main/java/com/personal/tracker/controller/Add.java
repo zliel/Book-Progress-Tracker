@@ -190,7 +190,7 @@ public class Add {
             "CHAPTER_TITLE varchar(255) NOT NULL," +
             "BOOK varchar(255) NOT NULL," +
             "COMPLETION_DATE DATE NOT NULL," +
-            "FOREIGN KEY (STUDENT_ID) REFERENCES STUDENT(STUDENT_ID)" +
+            "FOREIGN KEY (STUDENT_ID) REFERENCES STUDENT(STUDENT_ID) ON DELETE CASCADE" +
             ")";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
