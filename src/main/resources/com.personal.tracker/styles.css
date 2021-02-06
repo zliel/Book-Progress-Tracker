@@ -17,3 +17,9 @@
     -fx-background-color: darkslateblue;
     -fx-text-fill: white;
 }
+
+/* Styles for the delete buttons in the input forms */
+.delete-button {
+    -fx-background-color: red;
+    -fx-text-fill: white;
+}
