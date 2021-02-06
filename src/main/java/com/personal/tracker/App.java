@@ -29,7 +29,6 @@ public class App extends Application {
   @Override
   public void start(Stage stage) {
     // Check the config file to see if the database exists
-    // TODO Put this in its own method that will be called at the start
     initialize();
 
     // Create our initial tables
