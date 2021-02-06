@@ -57,4 +57,12 @@ public class CompletedChapter {
     this.bookTitle = bookTitle;
   }
 
+  public boolean studentIdIsEqual(Long studentId) {
+    return studentId.equals(getStudentId());
+  }
+
+  public boolean chapterIsEqual(Long chapterNum, String book) {
+    return (chapterNum.equals(getChapterNumber()) && book.equals(getBookTitle()));
+  }
+
 }
