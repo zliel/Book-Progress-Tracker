@@ -1,5 +1,6 @@
 package com.personal.tracker;
 
+import com.personal.tracker.controller.Add;
 import com.personal.tracker.controller.Query;
 import com.personal.tracker.models.Chapter;
 import com.personal.tracker.models.CompletedChapter;
@@ -15,13 +16,48 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.util.Scanner;
 
 public class App extends Application {
 
   @Override
   public void start(Stage stage) {
+    // Check the config file to see if the database exists
+    try {
+      File config = new File("settings.txt");
+      if(!config.exists()) {
+        throw new FileNotFoundException("The file doesn't exist.");
+      }
+      Scanner configReader = new Scanner(config);
+
+      while(configReader.hasNextLine()) {
+        String data = configReader.nextLine();
+        if(data.equals("database_exists==False")) {
+          Add.createDatabase();
+        }
+        System.out.println(data);
+      }
+    } catch (FileNotFoundException fnf) {
+      File newConfig = new File("settings.txt");
+
+      try {
+        Add.createDatabase();
+        FileWriter configWriter = new FileWriter(newConfig);
+        configWriter.write("database_exists==True");
+        configWriter.flush();
+        configWriter.close();
+
+      } catch (IOException ioe) {
+        System.err.println("There was an IOException: " + ioe);
+      }
+    }
+
     // Create our initial tables
     TableView<Student> studentTable = createStudentTable();
     TableView<Chapter> chapterTable = createChapterTable();
@@ -68,7 +104,7 @@ public class App extends Application {
     ArrayList<Student> students = Query.listStudents();
 
     // Create an observable list for reactivity later
-    ObservableList<Student> list = FXCollections.observableArrayList(students);
+    ObservableList<Student> list = FXCollections.observableList(students);
     studentTable.setItems(list);
 
     // Set the columns' titles and data (the data comes from the Student.java file in the
@@ -93,7 +129,7 @@ public class App extends Application {
     ArrayList<Chapter> students = Query.listChapters();
 
     // Create an observable list for reactivity later
-    ObservableList<Chapter> list = FXCollections.observableArrayList(students);
+    ObservableList<Chapter> list = FXCollections.observableList(students);
     chapterTable.setItems(list);
 
     // Set the columns' titles and data (the data comes from the Student.java file in the
@@ -136,7 +172,7 @@ public class App extends Application {
     bookTitleCol.setCellValueFactory(new PropertyValueFactory<>("bookTitle"));
 
     // Set the data in the table
-    completedChaptersTable.getColumns().setAll(studentIdCol, chapterNumCol, chapterTitleCol, bookTitleCol);
+    completedChaptersTable.getColumns().setAll(studentIdCol, chapterNumCol, chapterTitleCol, bookTitleCol, completedDateCol);
     return completedChaptersTable;
   }
 
