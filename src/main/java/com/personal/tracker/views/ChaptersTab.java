@@ -71,17 +71,37 @@ public class ChaptersTab {
         long chapterNum = chapterNumberSpinner.getValue();
         String chapterTitle = chapterTitleField.getText();
         String bookTitle = bookTitleField.getText();
+        boolean chapterExists = false;
 
-        // Labels for testing
+        // Check if the chapter to be made already exists in the table
+        ListIterator<Chapter> chapterListIterator = chapters.getItems().listIterator();
+
+        while (chapterListIterator.hasNext()) {
+          Chapter currentChapter = chapterListIterator.next();
+
+          if (currentChapter.getChapterKey().equals(chapterNum) && currentChapter.getChapterTitle().equalsIgnoreCase(chapterTitle) && currentChapter.getBookTitle().equalsIgnoreCase(bookTitle)) {
+            System.err.println("THAT CHAPTER ALREADY EXISTS");
+            // Make a warning label for this to show the user
+            chapterExists = true;
+          } else if (currentChapter.getChapterKey().equals(chapterNum) && currentChapter.getBookTitle().equalsIgnoreCase(bookTitle)) {
+            System.err.printf("CHAPTER %d IN BOOK %s ALREADY EXISTS\n", chapterNum, bookTitle);
+            // Make a warning label for this to show the user
+            chapterExists = true;
+          }
+        }
+
+        if(!chapterExists) {
+          // Labels for testing
 //        chapterTitleLabel.setText("Chapter Title: " + chapterTitleField.getText());
 //        chapterNumberLabel.setText("Chapter Number: " + chapterNumberSpinner.getValue());
 //        bookTitleLabel.setText("Book Title: " + bookTitleField.getText());
 
-        // Add the Chapter to the database
-        Add.addChapter(chapterNum, chapterTitle, bookTitle);
+          // Add the Chapter to the database
+          Add.addChapter(chapterNum, chapterTitle, bookTitle);
 
-        // Add the chapter to the TableView (to the underlying ObservableList)
-        chapters.getItems().add(new Chapter(chapterNum, chapterTitle, bookTitle));
+          // Add the chapter to the TableView (to the underlying ObservableList)
+          chapters.getItems().add(new Chapter(chapterNum, chapterTitle, bookTitle));
+        }
       }
     });
 

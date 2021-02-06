@@ -38,13 +38,19 @@ public class StudentTab {
         String newFirstName = studentFirstNameField.getText();
         String newLastName = studentLastNameField.getText();
 
-        // These are the labels for testing
+        // If the student ID exists in the database, don't create a new Student (throws a SQLException)
+        if(Delete.getStudentId(newFirstName, newLastName) != null) {
+          System.err.println("THAT STUDENT ALREADY EXISTS");
+          // Show a warning label to the user if the student already exists
+        } else {
+          // These are the labels for testing
 //        firstNameLabel.setText("First Name: " + studentFirstNameField.getText());
 //        lastNameLabel.setText("Last Name: " + studentLastNameField.getText());
 
-        Add.addStudent(newFirstName, newLastName);
-        Long studentId = Delete.getStudentId(newFirstName, newLastName);
-        students.getItems().add(new Student(studentId, newFirstName, newLastName));
+          Add.addStudent(newFirstName, newLastName);
+          Long studentId = Delete.getStudentId(newFirstName, newLastName);
+          students.getItems().add(new Student(studentId, newFirstName, newLastName));
+        }
       }
     });
 
