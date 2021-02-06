@@ -5,8 +5,8 @@ public class Student {
   private String lastName;
   private Long id;
 
-  public Student(Long id, String firstName, String lastName) {
-    this.id = id;
+  public Student(Long studentId, String firstName, String lastName) {
+    this.id = studentId;
     this.firstName = firstName;
     this.lastName = lastName;
   }
