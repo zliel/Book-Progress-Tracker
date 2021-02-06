@@ -67,7 +67,7 @@ public class Main {
         String answer = addScanner.next();
         if (answer.equalsIgnoreCase("new")) {
           String book;
-          Long chapterId;
+          int chapterId;
           String chapterTitle;
 
           System.out.println("Which book is the chapter from? ");
@@ -75,7 +75,7 @@ public class Main {
           book = addScanner.nextLine();
 
           System.out.println("What is the chapter number? ");
-          chapterId = addScanner.nextLong();
+          chapterId = addScanner.nextInt();
 
           System.out.println("What is the chapter name? ");
           addScanner.nextLine();
@@ -94,7 +94,7 @@ public class Main {
           addScanner.nextLine();
           String book = addScanner.nextLine();
           System.out.println("Chapter number please: ");
-          Long chapterId = addScanner.nextLong();
+          int chapterId = addScanner.nextInt();
 
           Add.addCompletedChapter(firstName, lastName, chapterId, book);
         }
