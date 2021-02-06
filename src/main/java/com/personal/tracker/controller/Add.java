@@ -1,10 +1,6 @@
 package com.personal.tracker.controller;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 
 /**
@@ -23,7 +19,7 @@ public class Add {
    * @param lastName The last name of the student who completed the chapter.
    * @param chapterNumber The ID of the chapter that's been completed.
    */
-  public static void addCompletedChapter(String firstName, String lastName, Long chapterNumber,
+  public static void addCompletedChapter(String firstName, String lastName, long chapterNumber,
                                          String book) {
     LocalDate date = LocalDate.now();
 
@@ -78,7 +74,7 @@ public class Add {
    * @param chapterNum The ID of the chapter to add.
    * @param chapterTitle The title of the chapter to add.
    */
-  public static void addChapter(Long chapterNum, String chapterTitle, String book) {
+  public static void addChapter(long chapterNum, String chapterTitle, String book) {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
     PreparedStatement statement;
@@ -151,6 +147,72 @@ public class Add {
 
       // Execute the update and count the new rows
       int newRowCount = statement.executeUpdate();
+      System.out.printf("%d row(s) added.\n", newRowCount);
+      System.out.println("Table successfully updated!");
+
+      // Cleanup - close the Statement object to free up resources
+      statement.close();
+
+      // Cleanup - close the Connection object to free up resources
+      conn.close();
+
+    } catch (SQLException sqle) {
+      // If there's an Exception, print out the stack trace so we can figure out what's up
+      sqle.printStackTrace();
+    }
+  }
+
+  public static void createDatabase() {
+    // Initialize the Connection and PreparedStatement objects
+    Connection conn;
+    Statement statement;
+
+    // Initialize the string to hold the query
+    String studentTableQuery =
+        "CREATE TABLE STUDENT (" +
+            "STUDENT_ID LONG AUTO_INCREMENT PRIMARY KEY," +
+            "FIRST_NAME varchar(255) NOT NULL," +
+            "LAST_NAME varchar(255) NOT NULL" +
+            ")";
+
+    String chapterTableQuery =
+        "CREATE TABLE CHAPTER (" +
+            "CHAPTER_ID LONG AUTO_INCREMENT PRIMARY KEY," +
+            "CHAPTER_NUMBER LONG NOT NULL," +
+            "CHAPTER_TITLE varchar(255) NOT NULL," +
+            "BOOK varchar(255) NOT NULL" +
+            ")";
+
+    String completedChapterTableQuery =
+        "CREATE TABLE STUDENT_PROGRESS (" +
+            "STUDENT_ID LONG NOT NULL," +
+            "CHAPTER_NUMBER LONG NOT NULL," +
+            "CHAPTER_TITLE varchar(255) NOT NULL," +
+            "BOOK varchar(255) NOT NULL," +
+            "COMPLETION_DATE DATE NOT NULL," +
+            "FOREIGN KEY (STUDENT_ID) REFERENCES STUDENT(STUDENT_ID)" +
+            ")";
+
+    // Try block (because jdbc methods can throw SQLException exceptions)
+    try {
+      // Make a connection to the database
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
+          "sa", "");
+
+      // Make a preparedStatement and fill in the blanks
+      statement = conn.createStatement();
+
+
+      // Execute the update and count the new rows
+      int newRowCount = statement.executeUpdate(studentTableQuery);
+      System.out.printf("%d row(s) added.\n", newRowCount);
+      System.out.println("Table successfully updated!");
+
+      newRowCount = statement.executeUpdate(chapterTableQuery);
+      System.out.printf("%d row(s) added.\n", newRowCount);
+      System.out.println("Table successfully updated!");
+
+      newRowCount = statement.executeUpdate(completedChapterTableQuery);
       System.out.printf("%d row(s) added.\n", newRowCount);
       System.out.println("Table successfully updated!");
 
