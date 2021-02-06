@@ -256,4 +256,53 @@ public class Query {
       return completedChapters;
     }
   }
+
+  public static String getChapterTitle(long chapterNum, String bookTitle) {
+    // Initialize the return variable
+    String chapterTitle = null;
+
+    // Initialize the Connection and PreparedStatement objects
+    Connection conn;
+    PreparedStatement statement;
+
+    // Initialize the string to hold the query
+    String sqlQuery =
+        "SELECT CHAPTER_TITLE FROM CHAPTER " +
+            "WHERE CHAPTER_NUMBER = ? AND BOOK = ?";
+
+    // Try block (because jdbc methods can throw SQLException exceptions)
+    try {
+      // Make a connection to the database
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
+
+      // Make a preparedStatement and fill in the blanks
+      statement = conn.prepareStatement(sqlQuery);
+      statement.setLong(1, chapterNum);
+      statement.setString(2, bookTitle);
+
+      // Make a ResultSet object to store the query results
+      ResultSet results = statement.executeQuery();
+
+      while (results.next()) {
+        // Get the returned string from the ResultSet
+        chapterTitle = results.getString("CHAPTER_TITLE");
+      }
+
+      // Cleanup - close the ResultSet object to free up resources
+      results.close();
+
+      // Cleanup - close the Statement object to free up resources
+      statement.close();
+
+      // Cleanup - close the Connection object to free up resources
+      conn.close();
+
+      return chapterTitle;
+
+    } catch (SQLException sqle) {
+      // If there's an Exception, print out the stack trace so we can figure out what's up
+      sqle.printStackTrace();
+      return null;
+    }
+  }
 }
