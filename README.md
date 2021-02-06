@@ -1,6 +1,7 @@
 # Book-Progress-Tracker
 This is a progress tracker I'm making to track my progress throughout different books.
-
+<br> <br>
+![Java CI with Gradle](https://github.com/zliel/Book-Progress-Tracker/workflows/Java%20CI%20with%20Gradle/badge.svg)
 ## Table of Contents
 * [Table Structure](#table-structure)
   * [Student Table](#student-table)
