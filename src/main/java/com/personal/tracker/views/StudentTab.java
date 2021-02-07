@@ -4,10 +4,12 @@ import com.personal.tracker.controller.Add;
 import com.personal.tracker.controller.Delete;
 import com.personal.tracker.models.CompletedChapter;
 import com.personal.tracker.models.Student;
+import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import java.util.ListIterator;
 
 public class StudentTab {
@@ -20,6 +22,23 @@ public class StudentTab {
     TextField studentLastNameField = new TextField();
     studentLastNameField.setPromptText("Student Last Name");
     studentLastNameField.setTooltip(new Tooltip("Student Last Name"));
+
+    // This is a warning label that will show when the user tries to create
+    Label warningLabel = new Label();
+    warningLabel.getStyleClass().add("warning-label");
+
+    FadeTransition fadeIn = new FadeTransition();
+    fadeIn.setDuration(Duration.millis(100));
+    fadeIn.setFromValue(0.0);
+    fadeIn.setToValue(10d);
+    fadeIn.setNode(warningLabel);
+
+    FadeTransition fadeOut = new FadeTransition();
+    fadeOut.setDuration(Duration.millis(100));
+    fadeOut.setFromValue(10d);
+    fadeOut.setToValue(0.0d);
+    fadeOut.setDelay(Duration.seconds(2d));
+    fadeOut.setNode(warningLabel);
 
     // Labels for testing action handlers on buttons for testing (uncomment these in testing)
 //    Label firstNameLabel = new Label();
@@ -37,7 +56,14 @@ public class StudentTab {
       // If the student ID exists in the database, don't create a new Student (throws a SQLException)
       if(Delete.getStudentId(newFirstName, newLastName) != null) {
         System.err.println("THAT STUDENT ALREADY EXISTS");
-        // Show a warning label to the user if the student already exists
+
+        // Give the user a warning if they try to create a duplicate Student
+        warningLabel.setText("That student already exists!");
+
+        // Play the fade in and fade out animations for the warning
+        fadeIn.play();
+        fadeOut.play();
+
       } else {
         // These are the labels for testing
 //        firstNameLabel.setText("First Name: " + studentFirstNameField.getText());
@@ -100,6 +126,7 @@ public class StudentTab {
     //inputGrid.add(lastNameLabel, 1, 1);
     inputGrid.add(submitButton, 2, 0);
     inputGrid.add(deleteButton, 3, 0);
+    inputGrid.add(warningLabel, 4, 0);
 
     // Add the GridPane to our Vbox
     vbox.getChildren().addAll(students, inputGrid);

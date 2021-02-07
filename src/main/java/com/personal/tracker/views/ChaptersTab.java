@@ -4,12 +4,15 @@ import com.personal.tracker.controller.Add;
 import com.personal.tracker.controller.Delete;
 import com.personal.tracker.models.Chapter;
 import com.personal.tracker.models.CompletedChapter;
+import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+
 import java.util.ListIterator;
 
 public class ChaptersTab {
@@ -26,6 +29,23 @@ public class ChaptersTab {
     TextField bookTitleField = new TextField();
     bookTitleField.setPromptText("Book Title");
     bookTitleField.setTooltip(new Tooltip("Book Title"));
+
+    // This is a warning label that will show when the user tries to create
+    Label warningLabel = new Label();
+    warningLabel.getStyleClass().add("warning-label");
+
+    FadeTransition fadeIn = new FadeTransition();
+    fadeIn.setDuration(Duration.millis(100));
+    fadeIn.setFromValue(0.0);
+    fadeIn.setToValue(10d);
+    fadeIn.setNode(warningLabel);
+
+    FadeTransition fadeOut = new FadeTransition();
+    fadeOut.setDuration(Duration.millis(100));
+    fadeOut.setFromValue(10d);
+    fadeOut.setToValue(0.0d);
+    fadeOut.setDelay(Duration.seconds(2d));
+    fadeOut.setNode(warningLabel);
 
     // Labels for testing
 //    Label chapterTitleLabel = new Label();
@@ -101,6 +121,13 @@ public class ChaptersTab {
 
           // Add the chapter to the TableView (to the underlying ObservableList)
           chapters.getItems().add(new Chapter(chapterNum, chapterTitle, bookTitle));
+        } else {
+          // Give the user a warning message when they try to create a duplicate Chapter
+          warningLabel.setText("That chapter already exists!");
+
+          // Play the fade in and fade out animations for the warning
+          fadeIn.play();
+          fadeOut.play();
         }
       }
     });
@@ -133,6 +160,7 @@ public class ChaptersTab {
     //chapterInputForm.add(bookTitleLabel, 2, 1);
     chapterInputForm.add(submitButton, 3, 0);
     chapterInputForm.add(deleteButton, 4, 0);
+    chapterInputForm.add(warningLabel, 5, 0);
 
     // Add the GridPane to our Vbox
     vbox.getChildren().addAll(chapters, chapterInputForm);

@@ -4,12 +4,14 @@ import com.personal.tracker.controller.Add;
 import com.personal.tracker.controller.Delete;
 import com.personal.tracker.controller.Query;
 import com.personal.tracker.models.CompletedChapter;
+import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ListIterator;
@@ -29,6 +31,23 @@ public class CompletedChapterTab {
     Spinner<Integer> chapterNumberSpinner = new Spinner<>(1, 99, 1);
     chapterNumberSpinner.setTooltip(new Tooltip("Chapter Number"));
     chapterNumberSpinner.setEditable(true);
+
+    // This is a warning label that will show when the user tries to create
+    Label warningLabel = new Label();
+    warningLabel.getStyleClass().add("warning-label");
+
+    FadeTransition fadeIn = new FadeTransition();
+    fadeIn.setDuration(Duration.millis(100));
+    fadeIn.setFromValue(0.0);
+    fadeIn.setToValue(10d);
+    fadeIn.setNode(warningLabel);
+
+    FadeTransition fadeOut = new FadeTransition();
+    fadeOut.setDuration(Duration.millis(100));
+    fadeOut.setFromValue(10d);
+    fadeOut.setToValue(0.0d);
+    fadeOut.setDelay(Duration.seconds(2d));
+    fadeOut.setNode(warningLabel);
 
     // Labels for testing action handlers on buttons
 //    Label firstNameLabel = new Label();
@@ -84,6 +103,13 @@ public class CompletedChapterTab {
 
           // Add the new chapter to the TableView (to the underlying ObservableList)
           completedChapters.getItems().add(new CompletedChapter(studentId, chapterNum, Date.valueOf(date), bookTitle, chapterTitle));
+        } else {
+          // Give the user a warning if they try to make a duplicate Completed Chapter
+          warningLabel.setText("That chapter has already been completed!");
+
+          // Play the fade in and fade out animations for the warning
+          fadeIn.play();
+          fadeOut.play();
         }
       }
     });
@@ -134,6 +160,7 @@ public class CompletedChapterTab {
     //completedChapterInputForm.add(chapterNumberLabel, 3, 1);
     completedChapterInputForm.add(submitButton, 4, 0);
     completedChapterInputForm.add(deleteButton, 5, 0);
+    completedChapterInputForm.add(warningLabel, 6, 0);
 
     // Add the GridPane to our Vbox
     vbox.getChildren().addAll(completedChapters, completedChapterInputForm);
