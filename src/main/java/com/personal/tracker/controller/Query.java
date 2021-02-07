@@ -267,8 +267,8 @@ public class Query {
 
     // Initialize the string to hold the query
     String sqlQuery =
-        "SELECT CHAPTER_TITLE FROM CHAPTER " +
-            "WHERE CHAPTER_NUMBER = ? AND BOOK = ?";
+        "SELECT (SELECT CHAPTER_TITLE FROM CHAPTER " +
+            "WHERE CHAPTER_NUMBER = ? AND BOOK = ?) AS CHAPTER_TITLE";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {

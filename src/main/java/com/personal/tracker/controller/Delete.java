@@ -121,7 +121,7 @@ public class Delete {
     PreparedStatement statement;
 
     // Initialize the string to hold the query
-    String sqlDeleteQuery = "SELECT STUDENT_ID FROM STUDENT WHERE FIRST_NAME = ? AND LAST_NAME = ?";
+    String sqlDeleteQuery = "SELECT (SELECT STUDENT_ID FROM STUDENT WHERE FIRST_NAME = ? AND LAST_NAME = ?) AS STUDENT_ID";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
