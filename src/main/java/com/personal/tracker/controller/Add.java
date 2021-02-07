@@ -227,4 +227,16 @@ public class Add {
       sqle.printStackTrace();
     }
   }
+
+  public static boolean isStudentInputBlank(String firstName, String lastName) {
+    return firstName.isEmpty() || lastName.isEmpty();
+  }
+
+  public static boolean isChapterInputBlank(Long chapterNum, String chapterTitle, String bookTitle) {
+    return chapterNum == null || chapterTitle.isEmpty() || bookTitle.isEmpty();
+  }
+
+  public static boolean isCompletedChapterInputBlank(String firstName, String lastName, Long chapterNum, String bookTitle) {
+    return firstName.isEmpty() || lastName.isEmpty() || chapterNum == null || bookTitle.isEmpty();
+  }
 }

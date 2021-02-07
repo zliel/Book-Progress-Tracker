@@ -54,7 +54,17 @@ public class StudentTab {
       String newLastName = studentLastNameField.getText();
 
       // If the student ID exists in the database, don't create a new Student (throws a SQLException)
-      if(Delete.getStudentId(newFirstName, newLastName) != null) {
+      if(Add.isStudentInputBlank(newFirstName, newLastName)) {
+        System.err.println("FIELDS CANNOT BE BLANK");
+
+        // Give the user a warning if the input fields are blank
+        warningLabel.setText("Fields cannot be blank!");
+
+        // Play the fade in and fade out animations for the warning
+        fadeIn.play();
+        fadeOut.play();
+
+      } else if(Delete.getStudentId(newFirstName, newLastName) != null) {
         System.err.println("THAT STUDENT ALREADY EXISTS");
 
         // Give the user a warning if they try to create a duplicate Student

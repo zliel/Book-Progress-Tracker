@@ -110,7 +110,17 @@ public class ChaptersTab {
           }
         }
 
-        if(!chapterExists) {
+        if(Add.isChapterInputBlank(chapterNum, chapterTitle, bookTitle)) {
+          System.err.println("FIELDS CANNOT BE BLANK");
+
+          // Give the user a warning if the input fields are blank
+          warningLabel.setText("Fields cannot be blank!");
+
+          // Play the fade in and fade out animations for the warning
+          fadeIn.play();
+          fadeOut.play();
+
+        } else if(!chapterExists) {
           // Labels for testing
 //        chapterTitleLabel.setText("Chapter Title: " + chapterTitleField.getText());
 //        chapterNumberLabel.setText("Chapter Number: " + chapterNumberSpinner.getValue());
