@@ -12,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ListIterator;
 
 public class CompletedChapterTab {
   public static Tab createCompletedChaptersTab(TableView<CompletedChapter> completedChapters) {
@@ -56,16 +57,34 @@ public class CompletedChapterTab {
         // We get the student ID using the student's first and last name to search the database
         Long studentId = Delete.getStudentId(studentFirstName, studentLastName);
 
-        // Labels to be removed later
+        // Check if the chapter to be made already exists in the table
+        ListIterator<CompletedChapter> chapterListIterator = completedChapters.getItems().listIterator();
+
+        // A flag to tell the program whether the chapter being added already exists or not
+        boolean chapterExists = false;
+
+        while (chapterListIterator.hasNext()) {
+          CompletedChapter currentChapter = chapterListIterator.next();
+
+          if (currentChapter.studentIdIsEqual(studentId) && currentChapter.chapterIsEqual(chapterNum, bookTitle)) {
+            System.err.println("THAT CHAPTER ALREADY EXISTS");
+            // Make a warning label for this to show the user
+            chapterExists = true;
+          }
+        }
+
+        if(!chapterExists) {
+          // Labels to be removed later
 //        firstNameLabel.setText("First Name: " + studentFirstNameField.getText());
 //        lastNameLabel.setText("Last Name: " + studentLastNameField.getText());
 //        chapterNumberLabel.setText("Chapter Number: " + chapterNumberSpinner.getValue());
 
-        // Add the new chapter to our database
-        Add.addCompletedChapter(studentFirstName, studentLastName, chapterNum, bookTitle);
+          // Add the new chapter to our database
+          Add.addCompletedChapter(studentFirstName, studentLastName, chapterNum, bookTitle);
 
-        // Add the new chapter to the TableView (to the underlying ObservableList)
-        completedChapters.getItems().add(new CompletedChapter(studentId, chapterNum, Date.valueOf(date), bookTitle, chapterTitle));
+          // Add the new chapter to the TableView (to the underlying ObservableList)
+          completedChapters.getItems().add(new CompletedChapter(studentId, chapterNum, Date.valueOf(date), bookTitle, chapterTitle));
+        }
       }
     });
 
