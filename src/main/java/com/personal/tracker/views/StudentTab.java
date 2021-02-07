@@ -53,6 +53,8 @@ public class StudentTab {
       String newFirstName = studentFirstNameField.getText();
       String newLastName = studentLastNameField.getText();
 
+      boolean canCreateStudent = true;
+
       // If the student ID exists in the database, don't create a new Student (throws a SQLException)
       if(Add.isStudentInputBlank(newFirstName, newLastName)) {
         System.err.println("FIELDS CANNOT BE BLANK");
@@ -63,6 +65,7 @@ public class StudentTab {
         // Play the fade in and fade out animations for the warning
         fadeIn.play();
         fadeOut.play();
+        canCreateStudent = false;
 
       } else if(Delete.getStudentId(newFirstName, newLastName) != null) {
         System.err.println("THAT STUDENT ALREADY EXISTS");
@@ -73,8 +76,25 @@ public class StudentTab {
         // Play the fade in and fade out animations for the warning
         fadeIn.play();
         fadeOut.play();
+        canCreateStudent = false;
+      }
 
-      } else {
+      ListIterator<Student> studentListIterator = students.getItems().listIterator();
+
+      while (studentListIterator.hasNext()) {
+        Student currentStudent = studentListIterator.next();
+
+        if (currentStudent.getFirstName().equalsIgnoreCase(newFirstName) && currentStudent.getLastName().equalsIgnoreCase(newLastName)) {
+          warningLabel.setText("That student already exists!");
+
+          fadeIn.play();
+          fadeOut.play();
+
+          canCreateStudent = false;
+        }
+      }
+
+      if(canCreateStudent) {
         // These are the labels for testing
 //        firstNameLabel.setText("First Name: " + studentFirstNameField.getText());
 //        lastNameLabel.setText("Last Name: " + studentLastNameField.getText());
