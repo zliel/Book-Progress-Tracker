@@ -68,6 +68,7 @@ public class App extends Application {
     launch();
   }
 
+  @SuppressWarnings("unchecked")
   public static TableView<Student> createStudentTable() {
     // Move what's in start() here
     // Create a TableView for our database output
@@ -94,6 +95,7 @@ public class App extends Application {
     return studentTable;
   }
 
+  @SuppressWarnings("unchecked")
   public static TableView<Chapter> createChapterTable() {
     // Create a TableView for our database output
     TableView<Chapter> chapterTable = new TableView<>();
@@ -150,6 +152,7 @@ public class App extends Application {
       }
     }
   }
+
 
   public static TableView<CompletedChapter> createCompletedChaptersTable() {
     // Create a TableView for our database output
