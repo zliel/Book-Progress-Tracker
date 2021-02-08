@@ -153,7 +153,7 @@ public class App extends Application {
     }
   }
 
-
+  @SuppressWarnings("unchecked")
   public static TableView<CompletedChapter> createCompletedChaptersTable() {
     // Create a TableView for our database output
     TableView<CompletedChapter> completedChaptersTable = new TableView<>();
