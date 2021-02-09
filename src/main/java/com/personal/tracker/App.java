@@ -43,7 +43,14 @@ public class App extends Application {
     // Create tabs
     Tab studentTab = StudentTab.createStudentTab(studentTable, completedChaptersTable);
     Tab chapterTab = ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable);
-    Tab completedChaptersTab = CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable);
+    Tab completedChaptersTab = CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable);
+
+    // Reset the content of the Completed Chapters Tab each time the tab is selected so that if a user enters a new book into
+    // the Chapters table, it will be added to the ComboBox in the Completed Chapters Tab
+    completedChaptersTab.setOnSelectionChanged(event -> {
+      completedChaptersTab.setContent(CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable).getContent());
+    });
+
     Tab testTab = new Tab("Testing!", new Label("This is a test tab! :)"));
 
     // Add the tabs to the TabPane
