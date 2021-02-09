@@ -3,8 +3,11 @@ package com.personal.tracker.views;
 import com.personal.tracker.controller.Add;
 import com.personal.tracker.controller.Delete;
 import com.personal.tracker.controller.Query;
+import com.personal.tracker.models.Chapter;
 import com.personal.tracker.models.CompletedChapter;
 import javafx.animation.FadeTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -14,10 +17,20 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.ListIterator;
 
 public class CompletedChapterTab {
-  public static Tab createCompletedChaptersTab(TableView<CompletedChapter> completedChapters) {
+  public static Tab createCompletedChaptersTab(TableView<CompletedChapter> completedChapters, TableView<Chapter> chapters) {
+    ArrayList<String> books = new ArrayList<>();
+    for(Chapter currentChapter : chapters.getItems()) {
+      if (!books.contains(currentChapter.getBookTitle())) {
+        books.add(currentChapter.getBookTitle());
+      }
+    }
+
+    ObservableList<String> bookList = FXCollections.observableList(books);
+
     //Make input fields for each necessary piece of information for the database
     TextField studentFirstNameField = new TextField();
     studentFirstNameField.setPromptText("Student First Name");
@@ -25,8 +38,9 @@ public class CompletedChapterTab {
     TextField studentLastNameField = new TextField();
     studentLastNameField.setPromptText("Student Last Name");
 
-    TextField bookTitleField = new TextField();
-    bookTitleField.setPromptText("Book Title");
+    ComboBox<String> bookTitleField = new ComboBox<>();
+    bookTitleField.setItems(bookList);
+    bookTitleField.setValue(bookList.get(0));
 
     Spinner<Integer> chapterNumberSpinner = new Spinner<>(1, 99, 1);
     chapterNumberSpinner.setTooltip(new Tooltip("Chapter Number"));
@@ -67,7 +81,7 @@ public class CompletedChapterTab {
         LocalDate date = LocalDate.now();
         String studentFirstName = studentFirstNameField.getText();
         String studentLastName = studentLastNameField.getText();
-        String bookTitle = bookTitleField.getText();
+        String bookTitle = bookTitleField.getValue();
         long chapterNum = chapterNumberSpinner.getValue();
 
         if (Add.isCompletedChapterInputBlank(studentFirstName, studentLastName, chapterNum, bookTitle)) {
