@@ -2,6 +2,7 @@ package com.personal.tracker;
 
 import com.personal.tracker.controller.Add;
 import com.personal.tracker.controller.Query;
+import com.personal.tracker.controller.Update;
 import com.personal.tracker.models.Chapter;
 import com.personal.tracker.models.CompletedChapter;
 import com.personal.tracker.models.Student;
@@ -14,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -33,8 +35,11 @@ public class App extends Application {
 
     // Create our initial tables
     TableView<Student> studentTable = createStudentTable();
+    studentTable.setEditable(true);
     TableView<Chapter> chapterTable = createChapterTable();
+    chapterTable.setEditable(true);
     TableView<CompletedChapter> completedChaptersTable = createCompletedChaptersTable();
+    completedChaptersTable.setEditable(true);
 
 
     // Create a tabPane to choose which part of the database to view
@@ -42,7 +47,15 @@ public class App extends Application {
 
     // Create tabs
     Tab studentTab = StudentTab.createStudentTab(studentTable, completedChaptersTable);
+    studentTab.setOnSelectionChanged(event -> {
+      studentTab.setContent(StudentTab.createStudentTab(studentTable, completedChaptersTable).getContent());
+    });
+
     Tab chapterTab = ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable);
+    chapterTab.setOnSelectionChanged(event -> {
+      chapterTab.setContent(ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable).getContent());
+    });
+
     Tab completedChaptersTab = CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable);
 
     // Reset the content of the Completed Chapters Tab each time the tab is selected so that if a user enters a new book into
@@ -92,10 +105,23 @@ public class App extends Application {
     // com.personal.tracker.models package
     TableColumn<Student, Long> idCol = new TableColumn<>("ID");
     idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+
     TableColumn<Student, String> firstNameCol = new TableColumn<>("First Name");
     firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+    firstNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+    firstNameCol.setOnEditCommit(event -> {
+      Student studentToChange = studentTable.getSelectionModel().getSelectedItem();
+      Update.updateStudentFirstName(event.getNewValue(), studentToChange.getId());
+      firstNameCol.setText(event.getNewValue());
+    });
+
     TableColumn<Student, String> lastNameCol = new TableColumn<>("Last Name");
     lastNameCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+    lastNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+    lastNameCol.setOnEditCommit(event -> {
+      Student studentToChange = studentTable.getSelectionModel().getSelectedItem();
+      Update.updateStudentLastName(event.getNewValue(), studentToChange.getId());
+    });
 
     // Set the data in the table
     studentTable.getColumns().setAll(idCol, firstNameCol, lastNameCol);
@@ -119,10 +145,21 @@ public class App extends Application {
 
     TableColumn<Chapter, Long> chapterNumCol = new TableColumn<>("Chapter Number");
     chapterNumCol.setCellValueFactory(new PropertyValueFactory<>("chapterKey"));
+
     TableColumn<Chapter, String> chapterTitleCol = new TableColumn<>("Chapter Title");
     chapterTitleCol.setCellValueFactory(new PropertyValueFactory<>("chapterTitle"));
+    chapterTitleCol.setCellFactory(TextFieldTableCell.forTableColumn());
+    chapterTitleCol.setOnEditCommit(event -> {
+      Chapter chapterToChange = chapterTable.getSelectionModel().getSelectedItem();
+      Update.updateChapterTitle(event.getNewValue(), event.getOldValue(), chapterToChange.getBookTitle());
+    });
+
     TableColumn<Chapter, String> bookTitleCol = new TableColumn<>("Book Title");
     bookTitleCol.setCellValueFactory(new PropertyValueFactory<>("bookTitle"));
+    bookTitleCol.setCellFactory(TextFieldTableCell.forTableColumn());
+    bookTitleCol.setOnEditCommit(event -> {
+      Chapter chapterToChange = chapterTable.getSelectionModel().getSelectedItem();
+    });
 
     // Set the data in the table
     chapterTable.getColumns().setAll(chapterNumCol, chapterTitleCol, bookTitleCol);
