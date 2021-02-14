@@ -18,6 +18,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.converter.LongStringConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,11 +37,10 @@ public class App extends Application {
     // Create our initial tables
     TableView<Student> studentTable = createStudentTable();
     studentTable.setEditable(true);
-    TableView<Chapter> chapterTable = createChapterTable();
-    chapterTable.setEditable(true);
     TableView<CompletedChapter> completedChaptersTable = createCompletedChaptersTable();
     completedChaptersTable.setEditable(true);
-
+    TableView<Chapter> chapterTable = createChapterTable(completedChaptersTable);
+    chapterTable.setEditable(true);
 
     // Create a tabPane to choose which part of the database to view
     TabPane tabs = new TabPane();
@@ -88,84 +88,6 @@ public class App extends Application {
     launch();
   }
 
-  @SuppressWarnings("unchecked")
-  public static TableView<Student> createStudentTable() {
-    // Move what's in start() here
-    // Create a TableView for our database output
-    TableView<Student> studentTable = new TableView<>();
-
-    // Get an ArrayList with students from the database
-    ArrayList<Student> students = Query.listStudents();
-
-    // Create an observable list for reactivity later
-    ObservableList<Student> list = FXCollections.observableList(students);
-    studentTable.setItems(list);
-
-    // Set the columns' titles and data (the data comes from the Student.java file in the
-    // com.personal.tracker.models package
-    TableColumn<Student, Long> idCol = new TableColumn<>("ID");
-    idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-
-    TableColumn<Student, String> firstNameCol = new TableColumn<>("First Name");
-    firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-    firstNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
-    firstNameCol.setOnEditCommit(event -> {
-      Student studentToChange = studentTable.getSelectionModel().getSelectedItem();
-      Update.updateStudentFirstName(event.getNewValue(), studentToChange.getId());
-      firstNameCol.setText(event.getNewValue());
-    });
-
-    TableColumn<Student, String> lastNameCol = new TableColumn<>("Last Name");
-    lastNameCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-    lastNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
-    lastNameCol.setOnEditCommit(event -> {
-      Student studentToChange = studentTable.getSelectionModel().getSelectedItem();
-      Update.updateStudentLastName(event.getNewValue(), studentToChange.getId());
-    });
-
-    // Set the data in the table
-    studentTable.getColumns().setAll(idCol, firstNameCol, lastNameCol);
-    return studentTable;
-  }
-
-  @SuppressWarnings("unchecked")
-  public static TableView<Chapter> createChapterTable() {
-    // Create a TableView for our database output
-    TableView<Chapter> chapterTable = new TableView<>();
-
-    // Get an ArrayList with students from the database
-    ArrayList<Chapter> students = Query.listChapters();
-
-    // Create an observable list for reactivity later
-    ObservableList<Chapter> list = FXCollections.observableList(students);
-    chapterTable.setItems(list);
-
-    // Set the columns' titles and data (the data comes from the Student.java file in the
-    // com.personal.tracker.models package
-
-    TableColumn<Chapter, Long> chapterNumCol = new TableColumn<>("Chapter Number");
-    chapterNumCol.setCellValueFactory(new PropertyValueFactory<>("chapterKey"));
-
-    TableColumn<Chapter, String> chapterTitleCol = new TableColumn<>("Chapter Title");
-    chapterTitleCol.setCellValueFactory(new PropertyValueFactory<>("chapterTitle"));
-    chapterTitleCol.setCellFactory(TextFieldTableCell.forTableColumn());
-    chapterTitleCol.setOnEditCommit(event -> {
-      Chapter chapterToChange = chapterTable.getSelectionModel().getSelectedItem();
-      Update.updateChapterTitle(event.getNewValue(), event.getOldValue(), chapterToChange.getBookTitle());
-    });
-
-    TableColumn<Chapter, String> bookTitleCol = new TableColumn<>("Book Title");
-    bookTitleCol.setCellValueFactory(new PropertyValueFactory<>("bookTitle"));
-    bookTitleCol.setCellFactory(TextFieldTableCell.forTableColumn());
-    bookTitleCol.setOnEditCommit(event -> {
-      Chapter chapterToChange = chapterTable.getSelectionModel().getSelectedItem();
-    });
-
-    // Set the data in the table
-    chapterTable.getColumns().setAll(chapterNumCol, chapterTitleCol, bookTitleCol);
-    return chapterTable;
-  }
-
   public static void initialize() {
     try {
       File config = new File("settings.txt");
@@ -195,6 +117,151 @@ public class App extends Application {
         System.err.println("There was an IOException: " + ioe);
       }
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public static TableView<Student> createStudentTable() {
+    // Move what's in start() here
+    // Create a TableView for our database output
+    TableView<Student> studentTable = new TableView<>();
+
+    // Get an ArrayList with students from the database
+    ArrayList<Student> students = Query.listStudents();
+
+    // Create an observable list for reactivity later
+    ObservableList<Student> list = FXCollections.observableList(students);
+    studentTable.setItems(list);
+
+    // Set the columns' titles and data (the data comes from the Student.java file in the
+    // com.personal.tracker.models package
+    TableColumn<Student, Long> idCol = new TableColumn<>("ID");
+    idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+    TableColumn<Student, String> firstNameCol = new TableColumn<>("First Name");
+    firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+    firstNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+    firstNameCol.setOnEditCommit(event -> {
+      Student studentToChange = studentTable.getSelectionModel().getSelectedItem();
+      Update.updateStudentFirstName(event.getNewValue(), studentToChange.getId());
+      studentToChange.setFirstName(event.getNewValue());
+    });
+
+    TableColumn<Student, String> lastNameCol = new TableColumn<>("Last Name");
+    lastNameCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+    lastNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+    lastNameCol.setOnEditCommit(event -> {
+      Student studentToChange = studentTable.getSelectionModel().getSelectedItem();
+      Update.updateStudentLastName(event.getNewValue(), studentToChange.getId());
+      studentToChange.setLastName(event.getNewValue());
+    });
+
+    // Set the data in the table
+    studentTable.getColumns().setAll(idCol, firstNameCol, lastNameCol);
+    return studentTable;
+  }
+
+  @SuppressWarnings("unchecked")
+  public static TableView<Chapter> createChapterTable(TableView<CompletedChapter> completedChapterTable) {
+    // Create a TableView for our database output
+    TableView<Chapter> chapterTable = new TableView<>();
+
+    // Get an ArrayList with students from the database
+    ArrayList<Chapter> students = Query.listChapters();
+
+    // Create an observable list for reactivity later
+    ObservableList<Chapter> list = FXCollections.observableList(students);
+    chapterTable.setItems(list);
+
+    // Set the columns' titles and data (the data comes from the Student.java file in the
+    // com.personal.tracker.models package
+
+    TableColumn<Chapter, Long> chapterNumCol = new TableColumn<>("Chapter Number");
+    chapterNumCol.setCellValueFactory(new PropertyValueFactory<>("chapterKey"));
+    chapterNumCol.setCellFactory(TextFieldTableCell.forTableColumn(new LongStringConverter()));
+    chapterNumCol.setOnEditCommit(event -> {
+      // This is the flag we'll use to determine whether or not the user's input is valid
+      boolean inputIsValid = true;
+
+      Chapter chapterToChange = chapterTable.getSelectionModel().getSelectedItem();
+
+      // Make sure the chapter number doesn't already exist
+      for(Chapter currentChapter : list) {
+        if(currentChapter.getChapterKey().equals(event.getNewValue()) && currentChapter.getBookTitle().equalsIgnoreCase(chapterToChange.getBookTitle())) {
+          System.err.println("THAT CHAPTER NUMBER ALREADY EXISTS");
+          inputIsValid = false;
+
+          // TODO - This might end up really inefficient in instances with a lot of data, so look
+          //  into a better way to update the TableView Cell back to it's original state
+          chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
+        }
+      }
+
+      // If our input is valid, we update the database and tables
+      if(inputIsValid) {
+        Update.updateChapterNumber(event.getOldValue(), event.getNewValue(), chapterToChange.getBookTitle());
+        chapterToChange.setChapterKey(event.getNewValue());
+        completedChapterTable.setItems(createCompletedChaptersTable().getItems());
+      }
+    });
+
+
+    TableColumn<Chapter, String> chapterTitleCol = new TableColumn<>("Chapter Title");
+    chapterTitleCol.setCellValueFactory(new PropertyValueFactory<>("chapterTitle"));
+    chapterTitleCol.setCellFactory(TextFieldTableCell.forTableColumn());
+    chapterTitleCol.setOnEditCommit(event -> {
+      // This is the flag we'll use to determine whether or not the user's input is valid
+      boolean inputIsValid = true;
+
+      Chapter chapterToChange = chapterTable.getSelectionModel().getSelectedItem();
+
+      // Make sure the chapter number doesn't already exist
+      for(Chapter currentChapter : list) {
+        if(currentChapter.getChapterTitle().equals(event.getNewValue()) && currentChapter.getBookTitle().equalsIgnoreCase(chapterToChange.getBookTitle())) {
+          System.err.println("THAT CHAPTER NUMBER ALREADY EXISTS");
+          inputIsValid = false;
+
+          chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
+        }
+      }
+
+      // If our input is valid, we update the database and tables
+      if(inputIsValid) {
+        Update.updateChapterTitle(event.getNewValue(), event.getOldValue(), chapterToChange.getBookTitle());
+        chapterToChange.setChapterTitle(event.getNewValue());
+        completedChapterTable.setItems(createCompletedChaptersTable().getItems());
+      }
+    });
+
+    TableColumn<Chapter, String> bookTitleCol = new TableColumn<>("Book Title");
+    bookTitleCol.setCellValueFactory(new PropertyValueFactory<>("bookTitle"));
+    bookTitleCol.setCellFactory(TextFieldTableCell.forTableColumn());
+    bookTitleCol.setOnEditCommit(event -> {
+      // This is the flag we'll use to determine whether or not the user's input is valid
+      boolean inputIsValid = true;
+
+      Chapter chapterToChange = chapterTable.getSelectionModel().getSelectedItem();
+
+      // Make sure the chapter number doesn't already exist
+      for(Chapter currentChapter : list) {
+        if(currentChapter.getBookTitle().equalsIgnoreCase(event.getOldValue())) {
+          System.err.println("THAT CHAPTER NUMBER ALREADY EXISTS");
+          inputIsValid = false;
+
+          chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
+        }
+      }
+
+      // If our input is valid, we update the database and tables
+      if(inputIsValid) {
+        Update.updateBookTitle(event.getOldValue(), event.getNewValue());
+        chapterToChange.setBookTitle(event.getNewValue());
+        completedChapterTable.setItems(createCompletedChaptersTable().getItems());
+      }
+    });
+
+    // Set the data in the table
+    chapterTable.getColumns().setAll(chapterNumCol, chapterTitleCol, bookTitleCol);
+    return chapterTable;
   }
 
   @SuppressWarnings("unchecked")
