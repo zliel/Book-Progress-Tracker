@@ -8,8 +8,7 @@ import com.personal.tracker.models.CompletedChapter;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -40,7 +39,11 @@ public class CompletedChapterTab {
 
     ComboBox<String> bookTitleField = new ComboBox<>();
     bookTitleField.setItems(bookList);
-    bookTitleField.setValue(bookList.get(0));
+    try {
+      bookTitleField.setValue(bookList.get(0));
+    } catch (IndexOutOfBoundsException exception) {
+      System.err.println("The chapters table is empty!");
+    }
 
     Spinner<Integer> chapterNumberSpinner = new Spinner<>(1, 99, 1);
     chapterNumberSpinner.setTooltip(new Tooltip("Chapter Number"));
