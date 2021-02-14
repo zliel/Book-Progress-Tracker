@@ -67,7 +67,7 @@ public class StudentTab {
         fadeOut.play();
         canCreateStudent = false;
 
-      } else if(Delete.getStudentId(newFirstName, newLastName) != null) {
+      } else if(Delete.getStudentId(newFirstName, newLastName) != null && Delete.getStudentId(newFirstName, newLastName) != 0) {
         System.err.println("THAT STUDENT ALREADY EXISTS");
 
         // Give the user a warning if they try to create a duplicate Student

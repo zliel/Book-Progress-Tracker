@@ -3,10 +3,12 @@ package com.personal.tracker.views;
 import com.personal.tracker.controller.Add;
 import com.personal.tracker.controller.Delete;
 import com.personal.tracker.controller.Query;
+import com.personal.tracker.models.Chapter;
 import com.personal.tracker.models.CompletedChapter;
 import javafx.animation.FadeTransition;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -14,10 +16,20 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.ListIterator;
 
 public class CompletedChapterTab {
-  public static Tab createCompletedChaptersTab(TableView<CompletedChapter> completedChapters) {
+  public static Tab createCompletedChaptersTab(TableView<CompletedChapter> completedChapters, TableView<Chapter> chapters) {
+    ArrayList<String> books = new ArrayList<>();
+    for(Chapter currentChapter : chapters.getItems()) {
+      if (!books.contains(currentChapter.getBookTitle())) {
+        books.add(currentChapter.getBookTitle());
+      }
+    }
+
+    ObservableList<String> bookList = FXCollections.observableList(books);
+
     //Make input fields for each necessary piece of information for the database
     TextField studentFirstNameField = new TextField();
     studentFirstNameField.setPromptText("Student First Name");
@@ -25,8 +37,13 @@ public class CompletedChapterTab {
     TextField studentLastNameField = new TextField();
     studentLastNameField.setPromptText("Student Last Name");
 
-    TextField bookTitleField = new TextField();
-    bookTitleField.setPromptText("Book Title");
+    ComboBox<String> bookTitleField = new ComboBox<>();
+    bookTitleField.setItems(bookList);
+    try {
+      bookTitleField.setValue(bookList.get(0));
+    } catch (IndexOutOfBoundsException exception) {
+      System.err.println("The chapters table is empty!");
+    }
 
     Spinner<Integer> chapterNumberSpinner = new Spinner<>(1, 99, 1);
     chapterNumberSpinner.setTooltip(new Tooltip("Chapter Number"));
@@ -60,65 +77,62 @@ public class CompletedChapterTab {
     submitButton.getStyleClass().add("submit-button");
 
     // Handle when the button is clicked
-    submitButton.setOnAction(new EventHandler<>() {
-      @Override
-      public void handle(ActionEvent event) {
-        // Here we get the information from the input form fields
-        LocalDate date = LocalDate.now();
-        String studentFirstName = studentFirstNameField.getText();
-        String studentLastName = studentLastNameField.getText();
-        String bookTitle = bookTitleField.getText();
-        long chapterNum = chapterNumberSpinner.getValue();
+    submitButton.setOnAction(event -> {
+      // Here we get the information from the input form fields
+      LocalDate date = LocalDate.now();
+      String studentFirstName = studentFirstNameField.getText();
+      String studentLastName = studentLastNameField.getText();
+      String bookTitle = bookTitleField.getValue();
+      long chapterNum = chapterNumberSpinner.getValue();
 
-        if (Add.isCompletedChapterInputBlank(studentFirstName, studentLastName, chapterNum, bookTitle)) {
-          warningLabel.setText("Fields cannot be blank");
+      if (Add.isCompletedChapterInputBlank(studentFirstName, studentLastName, chapterNum, bookTitle)) {
+        warningLabel.setText("Fields cannot be blank");
 
+        fadeIn.play();
+        fadeOut.play();
+
+      } else {
+
+        // We get the chapter title from the Chapter table
+        String chapterTitle = Query.getChapterTitle(chapterNum, bookTitle);
+
+        // We get the student ID using the student's first and last name to search the database
+        Long studentId = Delete.getStudentId(studentFirstName, studentLastName);
+
+        // Check if the chapter to be made already exists in the table
+        ListIterator<CompletedChapter> chapterListIterator = completedChapters.getItems().listIterator();
+
+        // A flag to tell the program whether the chapter being added already exists or not
+        boolean chapterExists = false;
+
+        while (chapterListIterator.hasNext()) {
+          CompletedChapter currentChapter = chapterListIterator.next();
+
+          if (currentChapter.studentIdIsEqual(studentId) && currentChapter.chapterIsEqual(chapterNum, bookTitle)) {
+            System.err.println("THAT CHAPTER ALREADY EXISTS");
+            // Make a warning label for this to show the user
+            chapterExists = true;
+          }
+        }
+
+        if (!chapterExists) {
+          // Labels to be removed later
+          //        firstNameLabel.setText("First Name: " + studentFirstNameField.getText());
+          //        lastNameLabel.setText("Last Name: " + studentLastNameField.getText());
+          //        chapterNumberLabel.setText("Chapter Number: " + chapterNumberSpinner.getValue());
+
+          // Add the new chapter to our database
+          Add.addCompletedChapter(studentFirstName, studentLastName, chapterNum, bookTitle);
+
+          // Add the new chapter to the TableView (to the underlying ObservableList)
+          completedChapters.getItems().add(new CompletedChapter(studentId, chapterNum, Date.valueOf(date), bookTitle, chapterTitle));
+        } else {
+          // Give the user a warning if they try to make a duplicate Completed Chapter
+          warningLabel.setText("That chapter has already been completed!");
+
+          // Play the fade in and fade out animations for the warning
           fadeIn.play();
           fadeOut.play();
-
-        } else {
-
-          // We get the chapter title from the Chapter table
-          String chapterTitle = Query.getChapterTitle(chapterNum, bookTitle);
-
-          // We get the student ID using the student's first and last name to search the database
-          Long studentId = Delete.getStudentId(studentFirstName, studentLastName);
-
-          // Check if the chapter to be made already exists in the table
-          ListIterator<CompletedChapter> chapterListIterator = completedChapters.getItems().listIterator();
-
-          // A flag to tell the program whether the chapter being added already exists or not
-          boolean chapterExists = false;
-
-          while (chapterListIterator.hasNext()) {
-            CompletedChapter currentChapter = chapterListIterator.next();
-
-            if (currentChapter.studentIdIsEqual(studentId) && currentChapter.chapterIsEqual(chapterNum, bookTitle)) {
-              System.err.println("THAT CHAPTER ALREADY EXISTS");
-              // Make a warning label for this to show the user
-              chapterExists = true;
-            }
-          }
-
-          if (!chapterExists) {
-            // Labels to be removed later
-            //        firstNameLabel.setText("First Name: " + studentFirstNameField.getText());
-            //        lastNameLabel.setText("Last Name: " + studentLastNameField.getText());
-            //        chapterNumberLabel.setText("Chapter Number: " + chapterNumberSpinner.getValue());
-
-            // Add the new chapter to our database
-            Add.addCompletedChapter(studentFirstName, studentLastName, chapterNum, bookTitle);
-
-            // Add the new chapter to the TableView (to the underlying ObservableList)
-            completedChapters.getItems().add(new CompletedChapter(studentId, chapterNum, Date.valueOf(date), bookTitle, chapterTitle));
-          } else {
-            // Give the user a warning if they try to make a duplicate Completed Chapter
-            warningLabel.setText("That chapter has already been completed!");
-
-            // Play the fade in and fade out animations for the warning
-            fadeIn.play();
-            fadeOut.play();
-          }
         }
       }
     });

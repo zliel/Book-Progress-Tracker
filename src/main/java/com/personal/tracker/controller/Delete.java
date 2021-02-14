@@ -119,6 +119,7 @@ public class Delete {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
     PreparedStatement statement;
+    Long studentId = null;
 
     // Initialize the string to hold the query
     String sqlDeleteQuery = "SELECT (SELECT STUDENT_ID FROM STUDENT WHERE FIRST_NAME = ? AND LAST_NAME = ?) AS STUDENT_ID";
@@ -139,7 +140,7 @@ public class Delete {
       results.next();
 
       // Retrieve the corresponding ID
-      Long studentId = results.getLong("STUDENT_ID");
+      studentId = results.getLong("STUDENT_ID");
 
       // Cleanup - close the Statement object to free up resources
       statement.close();
@@ -153,6 +154,8 @@ public class Delete {
       //sqle.printStackTrace();
       System.err.println("There was an sqle exception");
       return null;
+    } finally {
+      return studentId;
     }
   }
 
