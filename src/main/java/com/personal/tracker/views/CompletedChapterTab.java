@@ -49,6 +49,9 @@ public class CompletedChapterTab {
     chapterNumberSpinner.setTooltip(new Tooltip("Chapter Number"));
     chapterNumberSpinner.setEditable(true);
 
+    Label cannotEditLabel = new Label();
+    cannotEditLabel.setText("Note: Cells in the table above can't be directly edited.");
+
     // This is a warning label that will show when the user tries to create
     Label warningLabel = new Label();
     warningLabel.getStyleClass().add("warning-label");
@@ -187,7 +190,7 @@ public class CompletedChapterTab {
     completedChapterInputForm.add(warningLabel, 6, 0);
 
     // Add the GridPane to our Vbox
-    vbox.getChildren().addAll(completedChapters, completedChapterInputForm);
+    vbox.getChildren().addAll(completedChapters, completedChapterInputForm, cannotEditLabel);
 
     // Create our new Tab
     Tab completedChaptersTab = new Tab("Completed Chapters");
