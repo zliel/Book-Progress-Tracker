@@ -191,6 +191,8 @@ public class CompletedChapterTab {
 
     // Create our new Tab
     Tab completedChaptersTab = new Tab("Completed Chapters");
+    completedChaptersTab.setClosable(false);
+
     // Set the content of our Tab to what's in the VBox
     completedChaptersTab.setContent(vbox);
 

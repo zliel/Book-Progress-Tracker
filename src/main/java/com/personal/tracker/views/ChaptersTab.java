@@ -172,6 +172,8 @@ public class ChaptersTab {
     vbox.getChildren().addAll(chapters, chapterInputForm);
 
     Tab chapterTab = new Tab("Chapters");
+    chapterTab.setClosable(false);
+
     chapterTab.setContent(vbox);
 
     return chapterTab;
