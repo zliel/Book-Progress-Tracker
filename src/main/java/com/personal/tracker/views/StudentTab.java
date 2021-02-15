@@ -163,6 +163,7 @@ public class StudentTab {
     vbox.getChildren().addAll(students, inputGrid);
 
     Tab studentTab = new Tab("Students");
+    studentTab.setClosable(false);
 
     studentTab.setContent(vbox);
 
