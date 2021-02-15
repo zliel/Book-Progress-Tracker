@@ -64,13 +64,10 @@ public class App extends Application {
       completedChaptersTab.setContent(CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable).getContent());
     });
 
-    Tab testTab = new Tab("Testing!", new Label("This is a test tab! :)"));
-
     // Add the tabs to the TabPane
     tabs.getTabs().add(studentTab);
     tabs.getTabs().add(chapterTab);
     tabs.getTabs().add(completedChaptersTab);
-    tabs.getTabs().add(testTab);
 
     // Create our scene
     Scene scene = new Scene(new StackPane(tabs), 1440, 900);
