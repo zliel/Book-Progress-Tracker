@@ -11,6 +11,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import java.util.ListIterator;
+import org.apache.commons.text.WordUtils;
 
 public class StudentTab {
   public static Tab createStudentTab(TableView<Student> students, TableView<CompletedChapter> completedChapters) {
@@ -50,8 +51,8 @@ public class StudentTab {
 
     // Handle when the button is clicked
     submitButton.setOnAction(event -> {
-      String newFirstName = studentFirstNameField.getText();
-      String newLastName = studentLastNameField.getText();
+      String newFirstName = WordUtils.capitalizeFully(studentFirstNameField.getText());
+      String newLastName = WordUtils.capitalizeFully(studentLastNameField.getText());
 
       boolean canCreateStudent = true;
 
@@ -122,7 +123,7 @@ public class StudentTab {
       while (completedChapterIterator.hasNext()) {
         CompletedChapter currentChapter = completedChapterIterator.next();
 
-        if(currentChapter.studentIdIsEqual(selectedStudentId)) {
+        if(selectedStudentId != null && currentChapter.studentIdIsEqual(selectedStudentId)) {
           completedChapterIterator.remove();
         }
       }

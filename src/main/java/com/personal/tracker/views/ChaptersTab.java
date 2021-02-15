@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import org.apache.commons.text.WordUtils;
 
 import java.util.ListIterator;
 
@@ -85,8 +86,8 @@ public class ChaptersTab {
     submitButton.setOnAction(event -> {
       // Retrieve the information from the input form
       long chapterNum = chapterNumberSpinner.getValue();
-      String chapterTitle = chapterTitleField.getText();
-      String bookTitle = bookTitleField.getText();
+      String chapterTitle = WordUtils.capitalizeFully(chapterTitleField.getText());
+      String bookTitle = WordUtils.capitalizeFully(bookTitleField.getText());
       boolean chapterExists = false;
 
       // Check if the chapter to be made already exists in the table

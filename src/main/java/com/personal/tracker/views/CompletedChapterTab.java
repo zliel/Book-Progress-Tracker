@@ -8,12 +8,12 @@ import com.personal.tracker.models.CompletedChapter;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import org.apache.commons.text.WordUtils;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -80,8 +80,8 @@ public class CompletedChapterTab {
     submitButton.setOnAction(event -> {
       // Here we get the information from the input form fields
       LocalDate date = LocalDate.now();
-      String studentFirstName = studentFirstNameField.getText();
-      String studentLastName = studentLastNameField.getText();
+      String studentFirstName = WordUtils.capitalizeFully(studentFirstNameField.getText());
+      String studentLastName = WordUtils.capitalizeFully(studentLastNameField.getText());
       String bookTitle = bookTitleField.getValue();
       long chapterNum = chapterNumberSpinner.getValue();
 
@@ -108,7 +108,8 @@ public class CompletedChapterTab {
         while (chapterListIterator.hasNext()) {
           CompletedChapter currentChapter = chapterListIterator.next();
 
-          if (currentChapter.studentIdIsEqual(studentId) && currentChapter.chapterIsEqual(chapterNum, bookTitle)) {
+
+          if (studentId != null && currentChapter.studentIdIsEqual(studentId) && currentChapter.chapterIsEqual(chapterNum, bookTitle)) {
             System.err.println("THAT CHAPTER ALREADY EXISTS");
             // Make a warning label for this to show the user
             chapterExists = true;
