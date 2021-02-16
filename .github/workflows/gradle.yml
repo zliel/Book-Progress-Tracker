@@ -24,5 +24,3 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Run Java stylecheck
-      uses: axel-op/googlejavaformat-action@v3.4.0
