@@ -9,12 +9,7 @@ public class CompletedChapter {
   private String chapterTitle;
   private String bookTitle;
 
-  public CompletedChapter(
-      Long studentId,
-      Long chapterNumber,
-      Date completionDate,
-      String bookTitle,
-      String chapterTitle) {
+  public CompletedChapter(Long studentId, Long chapterNumber, Date completionDate, String bookTitle, String chapterTitle) {
     this.studentId = studentId;
     this.chapterNumber = chapterNumber;
     this.completionDate = completionDate;
@@ -53,7 +48,7 @@ public class CompletedChapter {
   public void setChapterTitle(String chapterTitle) {
     this.chapterTitle = chapterTitle;
   }
-
+  
   public String getBookTitle() {
     return bookTitle;
   }
@@ -69,4 +64,5 @@ public class CompletedChapter {
   public boolean chapterIsEqual(Long chapterNum, String book) {
     return (chapterNum.equals(getChapterNumber()) && book.equals(getBookTitle()));
   }
+
 }

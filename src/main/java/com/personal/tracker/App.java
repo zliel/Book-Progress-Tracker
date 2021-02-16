@@ -9,13 +9,6 @@ import com.personal.tracker.models.Student;
 import com.personal.tracker.views.ChaptersTab;
 import com.personal.tracker.views.CompletedChapterTab;
 import com.personal.tracker.views.StudentTab;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Scanner;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,6 +20,14 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.converter.LongStringConverter;
 import org.apache.commons.text.WordUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.util.Scanner;
 
 public class App extends Application {
 
@@ -48,31 +49,22 @@ public class App extends Application {
 
     // Create tabs
     Tab studentTab = StudentTab.createStudentTab(studentTable, completedChaptersTable);
-    studentTab.setOnSelectionChanged(
-        event -> {
-          studentTab.setContent(
-              StudentTab.createStudentTab(studentTable, completedChaptersTable).getContent());
-        });
+    studentTab.setOnSelectionChanged(event -> {
+      studentTab.setContent(StudentTab.createStudentTab(studentTable, completedChaptersTable).getContent());
+    });
 
     Tab chapterTab = ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable);
-    chapterTab.setOnSelectionChanged(
-        event -> {
-          chapterTab.setContent(
-              ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable).getContent());
-        });
+    chapterTab.setOnSelectionChanged(event -> {
+      chapterTab.setContent(ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable).getContent());
+    });
 
-    Tab completedChaptersTab =
-        CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable);
+    Tab completedChaptersTab = CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable);
 
-    // Reset the content of the Completed Chapters Tab each time the tab is selected so that if a
-    // user enters a new book into
+    // Reset the content of the Completed Chapters Tab each time the tab is selected so that if a user enters a new book into
     // the Chapters table, it will be added to the ComboBox in the Completed Chapters Tab
-    completedChaptersTab.setOnSelectionChanged(
-        event -> {
-          completedChaptersTab.setContent(
-              CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable)
-                  .getContent());
-        });
+    completedChaptersTab.setOnSelectionChanged(event -> {
+      completedChaptersTab.setContent(CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable).getContent());
+    });
 
     // Add the tabs to the TabPane
     tabs.getTabs().add(studentTab);
@@ -98,14 +90,14 @@ public class App extends Application {
   public static void initialize() {
     try {
       File config = new File("settings.txt");
-      if (!config.exists()) {
+      if(!config.exists()) {
         throw new FileNotFoundException("The file doesn't exist.");
       }
       Scanner configReader = new Scanner(config);
 
-      while (configReader.hasNextLine()) {
+      while(configReader.hasNextLine()) {
         String data = configReader.nextLine();
-        if (data.equals("database_exists==False")) {
+        if(data.equals("database_exists==False")) {
           Add.createDatabase();
         }
         System.out.println(data);
@@ -147,28 +139,26 @@ public class App extends Application {
     TableColumn<Student, String> firstNameCol = new TableColumn<>("First Name");
     firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
     firstNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
-    firstNameCol.setOnEditCommit(
-        event -> {
-          Student studentToChange = studentTable.getSelectionModel().getSelectedItem();
-          String updatedFirstName = WordUtils.capitalizeFully(event.getNewValue());
+    firstNameCol.setOnEditCommit(event -> {
+      Student studentToChange = studentTable.getSelectionModel().getSelectedItem();
+      String updatedFirstName = WordUtils.capitalizeFully(event.getNewValue());
 
-          Update.updateStudentFirstName(updatedFirstName, studentToChange.getId());
-          studentToChange.setFirstName(updatedFirstName);
-          studentTable.setItems(createStudentTable().getItems());
-        });
+      Update.updateStudentFirstName(updatedFirstName, studentToChange.getId());
+      studentToChange.setFirstName(updatedFirstName);
+      studentTable.setItems(createStudentTable().getItems());
+    });
 
     TableColumn<Student, String> lastNameCol = new TableColumn<>("Last Name");
     lastNameCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
     lastNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
-    lastNameCol.setOnEditCommit(
-        event -> {
-          Student studentToChange = studentTable.getSelectionModel().getSelectedItem();
-          String updatedLastName = WordUtils.capitalizeFully(event.getNewValue());
+    lastNameCol.setOnEditCommit(event -> {
+      Student studentToChange = studentTable.getSelectionModel().getSelectedItem();
+      String updatedLastName = WordUtils.capitalizeFully(event.getNewValue());
 
-          Update.updateStudentLastName(updatedLastName, studentToChange.getId());
-          studentToChange.setLastName(updatedLastName);
-          studentTable.setItems(createStudentTable().getItems());
-        });
+      Update.updateStudentLastName(updatedLastName, studentToChange.getId());
+      studentToChange.setLastName(updatedLastName);
+      studentTable.setItems(createStudentTable().getItems());
+    });
 
     // Set the data in the table
     studentTable.getColumns().setAll(idCol, firstNameCol, lastNameCol);
@@ -176,8 +166,7 @@ public class App extends Application {
   }
 
   @SuppressWarnings("unchecked")
-  public static TableView<Chapter> createChapterTable(
-      TableView<CompletedChapter> completedChapterTable) {
+  public static TableView<Chapter> createChapterTable(TableView<CompletedChapter> completedChapterTable) {
     // Create a TableView for our database output
     TableView<Chapter> chapterTable = new TableView<>();
 
@@ -194,102 +183,93 @@ public class App extends Application {
     TableColumn<Chapter, Long> chapterNumCol = new TableColumn<>("Chapter Number");
     chapterNumCol.setCellValueFactory(new PropertyValueFactory<>("chapterKey"));
     chapterNumCol.setCellFactory(TextFieldTableCell.forTableColumn(new LongStringConverter()));
-    chapterNumCol.setOnEditCommit(
-        event -> {
-          // This is the flag we'll use to determine whether or not the user's input is valid
-          boolean inputIsValid = true;
+    chapterNumCol.setOnEditCommit(event -> {
+      // This is the flag we'll use to determine whether or not the user's input is valid
+      boolean inputIsValid = true;
 
-          Chapter chapterToChange = chapterTable.getSelectionModel().getSelectedItem();
-          long updatedChapterNum = event.getNewValue();
-          long oldChapterNum = event.getOldValue();
+      Chapter chapterToChange = chapterTable.getSelectionModel().getSelectedItem();
+      long updatedChapterNum = event.getNewValue();
+      long oldChapterNum = event.getOldValue();
 
-          // Make sure the chapter number doesn't already exist
-          for (Chapter currentChapter : list) {
-            if ((!currentChapter.equals(chapterToChange))
-                && currentChapter.getChapterKey().equals(updatedChapterNum)
-                && currentChapter.getBookTitle().equalsIgnoreCase(chapterToChange.getBookTitle())) {
-              System.err.println("THAT CHAPTER NUMBER ALREADY EXISTS");
-              inputIsValid = false;
+      // Make sure the chapter number doesn't already exist
+      for(Chapter currentChapter : list) {
+        if((!currentChapter.equals(chapterToChange)) && currentChapter.getChapterKey().equals(updatedChapterNum) && currentChapter.getBookTitle().equalsIgnoreCase(chapterToChange.getBookTitle())) {
+          System.err.println("THAT CHAPTER NUMBER ALREADY EXISTS");
+          inputIsValid = false;
 
-              chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
-            }
-          }
+          chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
+        }
+      }
 
-          // If our input is valid, we update the database and tables
-          if (inputIsValid) {
-            Update.updateChapterNumber(
-                oldChapterNum, updatedChapterNum, chapterToChange.getBookTitle());
-            chapterToChange.setChapterKey(updatedChapterNum);
-            chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
-            completedChapterTable.setItems(createCompletedChaptersTable().getItems());
-          }
-        });
+      // If our input is valid, we update the database and tables
+      if(inputIsValid) {
+        Update.updateChapterNumber(oldChapterNum, updatedChapterNum, chapterToChange.getBookTitle());
+        chapterToChange.setChapterKey(updatedChapterNum);
+        chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
+        completedChapterTable.setItems(createCompletedChaptersTable().getItems());
+      }
+    });
+
 
     TableColumn<Chapter, String> chapterTitleCol = new TableColumn<>("Chapter Title");
     chapterTitleCol.setCellValueFactory(new PropertyValueFactory<>("chapterTitle"));
     chapterTitleCol.setCellFactory(TextFieldTableCell.forTableColumn());
-    chapterTitleCol.setOnEditCommit(
-        event -> {
-          // This is the flag we'll use to determine whether or not the user's input is valid
-          boolean inputIsValid = true;
+    chapterTitleCol.setOnEditCommit(event -> {
+      // This is the flag we'll use to determine whether or not the user's input is valid
+      boolean inputIsValid = true;
 
-          Chapter chapterToChange = chapterTable.getSelectionModel().getSelectedItem();
-          String updatedChapterTitle = WordUtils.capitalizeFully(event.getNewValue());
-          String oldChapterTitle = event.getOldValue();
+      Chapter chapterToChange = chapterTable.getSelectionModel().getSelectedItem();
+      String updatedChapterTitle = WordUtils.capitalizeFully(event.getNewValue());
+      String oldChapterTitle = event.getOldValue();
 
-          // Make sure the chapter number doesn't already exist
-          for (Chapter currentChapter : list) {
-            if ((!currentChapter.equals(chapterToChange))
-                && currentChapter.getChapterTitle().equals(updatedChapterTitle)
-                && currentChapter.getBookTitle().equalsIgnoreCase(chapterToChange.getBookTitle())) {
-              System.err.println("THAT CHAPTER NUMBER ALREADY EXISTS");
-              inputIsValid = false;
+      // Make sure the chapter number doesn't already exist
+      for(Chapter currentChapter : list) {
+        if((!currentChapter.equals(chapterToChange)) && currentChapter.getChapterTitle().equals(updatedChapterTitle) && currentChapter.getBookTitle().equalsIgnoreCase(chapterToChange.getBookTitle())) {
+          System.err.println("THAT CHAPTER NUMBER ALREADY EXISTS");
+          inputIsValid = false;
 
-              chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
-            }
-          }
+          chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
+        }
+      }
 
-          // If our input is valid, we update the database and tables
-          if (inputIsValid) {
-            Update.updateChapterTitle(
-                updatedChapterTitle, oldChapterTitle, chapterToChange.getBookTitle());
-            chapterToChange.setChapterTitle(updatedChapterTitle);
-            chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
-          }
-        });
+      // If our input is valid, we update the database and tables
+      if(inputIsValid) {
+        Update.updateChapterTitle(updatedChapterTitle, oldChapterTitle, chapterToChange.getBookTitle());
+        chapterToChange.setChapterTitle(updatedChapterTitle);
+        chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
+      }
+    });
 
     TableColumn<Chapter, String> bookTitleCol = new TableColumn<>("Book Title");
     bookTitleCol.setCellValueFactory(new PropertyValueFactory<>("bookTitle"));
     bookTitleCol.setCellFactory(TextFieldTableCell.forTableColumn());
     TextFieldTableCell<String, String> test = new TextFieldTableCell<>();
 
-    bookTitleCol.setOnEditCommit(
-        event -> {
-          // This is the flag we'll use to determine whether or not the user's input is valid
-          boolean inputIsValid = true;
+    bookTitleCol.setOnEditCommit(event -> {
+      // This is the flag we'll use to determine whether or not the user's input is valid
+      boolean inputIsValid = true;
 
-          Chapter chapterToChange = chapterTable.getSelectionModel().getSelectedItem();
-          String updatedBookTitle = WordUtils.capitalizeFully(event.getNewValue());
-          String oldBookTitle = event.getOldValue();
+      Chapter chapterToChange = chapterTable.getSelectionModel().getSelectedItem();
+      String updatedBookTitle = WordUtils.capitalizeFully(event.getNewValue());
+      String oldBookTitle = event.getOldValue();
 
-          // Make sure the chapter number doesn't already exist
-          for (Chapter currentChapter : list) {
-            if ((!currentChapter.equals(chapterToChange))
-                && currentChapter.getBookTitle().equalsIgnoreCase(oldBookTitle)) {
-              System.err.println("THAT CHAPTER NUMBER ALREADY EXISTS");
-              inputIsValid = false;
+      // Make sure the chapter number doesn't already exist
+      for(Chapter currentChapter : list) {
+        if((!currentChapter.equals(chapterToChange)) && currentChapter.getBookTitle().equalsIgnoreCase(oldBookTitle)) {
+          System.err.println("THAT CHAPTER NUMBER ALREADY EXISTS");
+          inputIsValid = false;
 
-              chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
-            }
-          }
+          chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
+        }
+      }
 
-          // If our input is valid, we update the database and tables
-          if (inputIsValid) {
-            Update.updateBookTitle(oldBookTitle, updatedBookTitle);
-            chapterToChange.setBookTitle(updatedBookTitle);
-            chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
-          }
-        });
+      // If our input is valid, we update the database and tables
+      if(inputIsValid) {
+        Update.updateBookTitle(oldBookTitle, updatedBookTitle);
+        chapterToChange.setBookTitle(updatedBookTitle);
+        chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
+      }
+    });
 
     // Set the data in the table
     chapterTable.getColumns().setAll(chapterNumCol, chapterTitleCol, bookTitleCol);
@@ -322,9 +302,7 @@ public class App extends Application {
     bookTitleCol.setCellValueFactory(new PropertyValueFactory<>("bookTitle"));
 
     // Set the data in the table
-    completedChaptersTable
-        .getColumns()
-        .setAll(studentIdCol, chapterNumCol, chapterTitleCol, bookTitleCol, completedDateCol);
+    completedChaptersTable.getColumns().setAll(studentIdCol, chapterNumCol, chapterTitleCol, bookTitleCol, completedDateCol);
     return completedChaptersTable;
   }
 

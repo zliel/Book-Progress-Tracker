@@ -23,8 +23,8 @@ import java.util.Date;
 public class Query {
 
   /**
-   * This method makes a query to the embedded database, retrieving all of the chapters completed by
-   * the student.
+   * This method makes a query to the embedded database, retrieving all of the chapters completed
+   * by the student.
    *
    * @param firstName The first name of the student we're searching for.
    * @param lastName The last name of the student we're searching for.
@@ -36,20 +36,16 @@ public class Query {
 
     // Initialize the string to hold the query
     String sqlQuery =
-        "SELECT sprog.COMPLETION_DATE, c.CHAPTER_NUMBER, c.CHAPTER_TITLE, c.BOOK "
-            + "FROM chapter AS c, student_progress AS sprog "
-            + "WHERE "
-            + "(SELECT STUDENT_ID FROM student WHERE FIRST_NAME = ? "
-            + " AND LAST_NAME = ? ) "
-            + "= sprog.STUDENT_ID "
-            + "AND c.CHAPTER_NUMBER = sprog.CHAPTER_NUMBER";
+      "SELECT sprog.COMPLETION_DATE, c.CHAPTER_NUMBER, c.CHAPTER_TITLE, c.BOOK " +
+        "FROM chapter AS c, student_progress AS sprog " +
+        "WHERE " +
+        "(SELECT STUDENT_ID FROM student WHERE FIRST_NAME = ? " + " AND LAST_NAME = ? ) " + "= sprog.STUDENT_ID " +
+        "AND c.CHAPTER_NUMBER = sprog.CHAPTER_NUMBER";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn =
-          DriverManager.getConnection(
-              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.prepareStatement(sqlQuery);
@@ -98,19 +94,17 @@ public class Query {
     String bookTitle;
 
     // Initialize the string to hold the query
-    String sqlQuery =
-        "SELECT CHAPTER_NUMBER, CHAPTER_TITLE, BOOK FROM CHAPTER GROUP BY BOOK, "
-            + "CHAPTER_NUMBER";
+    String sqlQuery = "SELECT CHAPTER_NUMBER, CHAPTER_TITLE, BOOK FROM CHAPTER GROUP BY BOOK, " +
+        "CHAPTER_NUMBER";
 
     // Try block (because jdbc methods can throw SQLException exceptions
     try {
       // Make a connection to the database
-      conn =
-          DriverManager.getConnection(
-              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.createStatement();
+
 
       // Make a ResultSet object to store the query results
       ResultSet results = statement.executeQuery(sqlQuery);
@@ -160,9 +154,7 @@ public class Query {
     // Try block (because jdbc methods can throw SQLException exceptions
     try {
       // Make a connection to the database
-      conn =
-          DriverManager.getConnection(
-              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       // Create variables for the Student properties
       Long studentId;
@@ -172,8 +164,11 @@ public class Query {
       // Make a preparedStatement and fill in the blanks
       statement = conn.createStatement();
 
+
       // Make a ResultSet object to store the query results
       ResultSet results = statement.executeQuery(sqlQuery);
+
+
 
       while (results.next()) {
         studentId = results.getLong(1);
@@ -215,18 +210,17 @@ public class Query {
 
     // Initialize the string to hold the query
     String sqlQuery =
-        "SELECT STUDENT_ID, CHAPTER_NUMBER, COMPLETION_DATE, BOOK, CHAPTER_TITLE "
-            + "FROM STUDENT_PROGRESS";
+        "SELECT STUDENT_ID, CHAPTER_NUMBER, COMPLETION_DATE, BOOK, CHAPTER_TITLE " +
+        "FROM STUDENT_PROGRESS";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn =
-          DriverManager.getConnection(
-              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.createStatement();
+
 
       // Make a ResultSet object to store the query results
       ResultSet results = statement.executeQuery(sqlQuery);
@@ -238,12 +232,12 @@ public class Query {
         completionDate = results.getDate("COMPLETION_DATE");
         bookTitle = results.getString("BOOK");
         chapterTitle = results.getString("CHAPTER_TITLE");
-        completedChapters.add(
-            new CompletedChapter(studentId, chapterId, completionDate, bookTitle, chapterTitle));
-        //        System.out.printf("%s \t", results.getDate("COMPLETION_DATE").toString());
-        //        System.out.printf("%d \t|", results.getLong("CHAPTER_NUMBER"));
-        //        System.out.printf("%-55s \t|", results.getString("CHAPTER_TITLE"));
-        //        System.out.printf("%10s \n", results.getString("BOOK"));
+        completedChapters.add(new CompletedChapter(studentId, chapterId, completionDate,
+            bookTitle, chapterTitle));
+//        System.out.printf("%s \t", results.getDate("COMPLETION_DATE").toString());
+//        System.out.printf("%d \t|", results.getLong("CHAPTER_NUMBER"));
+//        System.out.printf("%-55s \t|", results.getString("CHAPTER_TITLE"));
+//        System.out.printf("%10s \n", results.getString("BOOK"));
       }
 
       // Cleanup - close the ResultSet object to free up resources
@@ -273,15 +267,13 @@ public class Query {
 
     // Initialize the string to hold the query
     String sqlQuery =
-        "SELECT (SELECT CHAPTER_TITLE FROM CHAPTER "
-            + "WHERE CHAPTER_NUMBER = ? AND BOOK = ?) AS CHAPTER_TITLE";
+        "SELECT (SELECT CHAPTER_TITLE FROM CHAPTER " +
+            "WHERE CHAPTER_NUMBER = ? AND BOOK = ?) AS CHAPTER_TITLE";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn =
-          DriverManager.getConnection(
-              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.prepareStatement(sqlQuery);

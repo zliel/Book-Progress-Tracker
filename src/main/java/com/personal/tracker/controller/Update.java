@@ -12,19 +12,22 @@ public class Update {
     PreparedStatement statement;
 
     // Initialize the string to hold the query
-    String updateFirstName = "UPDATE STUDENT " + "SET FIRST_NAME = ? " + "WHERE STUDENT_ID = ?";
+    String updateFirstName =
+        "UPDATE STUDENT " +
+            "SET FIRST_NAME = ? " +
+            "WHERE STUDENT_ID = ?";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn =
-          DriverManager.getConnection(
-              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
+          "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.prepareStatement(updateFirstName);
       statement.setString(1, newFirstName);
       statement.setLong(2, id);
+
 
       // Execute the update and count the new rows
       int newRowCount = statement.executeUpdate();
@@ -49,19 +52,22 @@ public class Update {
     PreparedStatement statement;
 
     // Initialize the string to hold the query
-    String updateFirstName = "UPDATE STUDENT " + "SET LAST_NAME = ? " + "WHERE STUDENT_ID = ?";
+    String updateFirstName =
+        "UPDATE STUDENT " +
+            "SET LAST_NAME = ? " +
+            "WHERE STUDENT_ID = ?";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn =
-          DriverManager.getConnection(
-              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
+          "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.prepareStatement(updateFirstName);
       statement.setString(1, newLastName);
       statement.setLong(2, id);
+
 
       // Execute the update and count the new rows
       int newRowCount = statement.executeUpdate();
@@ -80,33 +86,34 @@ public class Update {
     }
   }
 
-  public static void updateChapterNumber(
-      long oldChapterNumber, long newChapterNumber, String bookTitle) {
+  public static void updateChapterNumber(long oldChapterNumber, long newChapterNumber, String bookTitle) {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
     PreparedStatement statement;
 
     // Initialize the string to hold the query
     String updateQuery =
-        "UPDATE CHAPTER " + "SET CHAPTER_NUMBER = ? " + "WHERE CHAPTER_NUMBER = ? AND BOOK = ? ";
+        "UPDATE CHAPTER " +
+            "SET CHAPTER_NUMBER = ? " +
+            "WHERE CHAPTER_NUMBER = ? AND BOOK = ? ";
 
     String secondQuery =
-        "UPDATE STUDENT_PROGRESS "
-            + "SET CHAPTER_NUMBER = ? "
-            + "WHERE CHAPTER_NUMBER = ? AND BOOK = ?";
+        "UPDATE STUDENT_PROGRESS " +
+            "SET CHAPTER_NUMBER = ? " +
+            "WHERE CHAPTER_NUMBER = ? AND BOOK = ?";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn =
-          DriverManager.getConnection(
-              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
+          "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.prepareStatement(updateQuery);
       statement.setLong(1, newChapterNumber);
       statement.setLong(2, oldChapterNumber);
       statement.setString(3, bookTitle);
+
 
       // Execute the update and count the new rows
       int newRowCount = statement.executeUpdate();
@@ -118,6 +125,7 @@ public class Update {
       statement.setLong(1, newChapterNumber);
       statement.setLong(2, oldChapterNumber);
       statement.setString(3, bookTitle);
+
 
       // Execute the update and count the new rows
       newRowCount = statement.executeUpdate();
@@ -136,33 +144,34 @@ public class Update {
     }
   }
 
-  public static void updateChapterTitle(
-      String newChapterTitle, String oldChapterTitle, String bookTitle) {
+  public static void updateChapterTitle(String newChapterTitle, String oldChapterTitle, String bookTitle) {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
     PreparedStatement statement;
 
     // Initialize the string to hold the query
     String updateQuery =
-        "UPDATE CHAPTER " + "SET CHAPTER_TITLE = ? " + "WHERE CHAPTER_TITLE = ? AND BOOK = ? ";
+        "UPDATE CHAPTER " +
+            "SET CHAPTER_TITLE = ? " +
+            "WHERE CHAPTER_TITLE = ? AND BOOK = ? ";
 
     String secondQuery =
-        "UPDATE STUDENT_PROGRESS "
-            + "SET CHAPTER_TITLE = ? "
-            + "WHERE CHAPTER_TITLE = ? AND BOOK = ?";
+        "UPDATE STUDENT_PROGRESS " +
+            "SET CHAPTER_TITLE = ? " +
+            "WHERE CHAPTER_TITLE = ? AND BOOK = ?";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn =
-          DriverManager.getConnection(
-              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
+          "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.prepareStatement(updateQuery);
       statement.setString(1, newChapterTitle);
       statement.setString(2, oldChapterTitle);
       statement.setString(3, bookTitle);
+
 
       // Execute the update and count the new rows
       int newRowCount = statement.executeUpdate();
@@ -174,6 +183,7 @@ public class Update {
       statement.setString(1, newChapterTitle);
       statement.setString(2, oldChapterTitle);
       statement.setString(3, bookTitle);
+
 
       // Execute the update and count the new rows
       newRowCount = statement.executeUpdate();
@@ -198,21 +208,27 @@ public class Update {
     PreparedStatement statement;
 
     // Initialize the string to hold the query
-    String updateQuery = "UPDATE CHAPTER " + "SET BOOK = ? " + "WHERE BOOK = ? ";
+    String updateQuery =
+        "UPDATE CHAPTER " +
+            "SET BOOK = ? " +
+            "WHERE BOOK = ? ";
 
-    String secondQuery = "UPDATE STUDENT_PROGRESS " + "SET BOOK = ? " + "WHERE BOOK = ?";
+    String secondQuery =
+        "UPDATE STUDENT_PROGRESS " +
+            "SET BOOK = ? " +
+            "WHERE BOOK = ?";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn =
-          DriverManager.getConnection(
-              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
+      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
+          "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.prepareStatement(updateQuery);
       statement.setString(1, newBookTitle);
       statement.setString(2, oldBookTitle);
+
 
       // Execute the update and count the new rows
       int newRowCount = statement.executeUpdate();
