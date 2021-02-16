@@ -3,20 +3,18 @@ package com.personal.tracker.controller;
 import java.util.Scanner;
 // DEPRECATED - WON'T BE USED IN THE GUI VERSION
 
-/**
- * This class executes the program, handling user input.
- */
+/** This class executes the program, handling user input. */
 public class Main {
   public static void primary(String[] args) {
     // Initialize Scanner object for user input
-    Scanner input = new Scanner( System.in );
+    Scanner input = new Scanner(System.in);
 
     System.out.println("Hello! What would you like to do today? Enter here:  ");
 
     String userCmd = input.next();
 
     // Handle user input
-    switch(userCmd) {
+    switch (userCmd) {
       case "help" -> help();
       case "add" -> add(input);
       case "list" -> list(input);
@@ -32,7 +30,8 @@ public class Main {
     System.out.println("Possible commands: ");
     System.out.println("\tadd: Add a student, chapter, or completed chapter to the tracker.");
     System.out.println("\n\tlist: List all chapters.");
-    System.out.println("\n\tdelete: Delete a student, chapter, or completed chapter from the tracker.");
+    System.out.println(
+        "\n\tdelete: Delete a student, chapter, or completed chapter from the tracker.");
     // main(new String[]{""}); //uncommenting this will make help() restart the program; it'd
     // need to be tested
   }
@@ -162,8 +161,9 @@ public class Main {
     }
   }
 
-  /** This method handles the "list" command, letting the user list either the students or
-   * chapters in the database.
+  /**
+   * This method handles the "list" command, letting the user list either the students or chapters
+   * in the database.
    *
    * @param listScanner The Scanner object passed in by the main() method
    */

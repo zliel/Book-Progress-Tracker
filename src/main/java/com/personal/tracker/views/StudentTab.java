@@ -4,17 +4,18 @@ import com.personal.tracker.controller.Add;
 import com.personal.tracker.controller.Delete;
 import com.personal.tracker.models.CompletedChapter;
 import com.personal.tracker.models.Student;
+import java.util.ListIterator;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-import java.util.ListIterator;
 import org.apache.commons.text.WordUtils;
 
 public class StudentTab {
-  public static Tab createStudentTab(TableView<Student> students, TableView<CompletedChapter> completedChapters) {
+  public static Tab createStudentTab(
+      TableView<Student> students, TableView<CompletedChapter> completedChapters) {
     // Make input fields for each necessary piece of information for the database
     TextField studentFirstNameField = new TextField();
     studentFirstNameField.setPromptText("Student First Name");
@@ -42,94 +43,101 @@ public class StudentTab {
     fadeOut.setNode(warningLabel);
 
     // Labels for testing action handlers on buttons for testing (uncomment these in testing)
-//    Label firstNameLabel = new Label();
-//    Label lastNameLabel = new Label();
+    //    Label firstNameLabel = new Label();
+    //    Label lastNameLabel = new Label();
 
     // Creating our submit button and giving it a style rule
     Button submitButton = new Button("Submit");
     submitButton.getStyleClass().add("submit-button");
 
     // Handle when the button is clicked
-    submitButton.setOnAction(event -> {
-      String newFirstName = WordUtils.capitalizeFully(studentFirstNameField.getText());
-      String newLastName = WordUtils.capitalizeFully(studentLastNameField.getText());
+    submitButton.setOnAction(
+        event -> {
+          String newFirstName = WordUtils.capitalizeFully(studentFirstNameField.getText());
+          String newLastName = WordUtils.capitalizeFully(studentLastNameField.getText());
 
-      boolean canCreateStudent = true;
+          boolean canCreateStudent = true;
 
-      // If the student ID exists in the database, don't create a new Student (throws a SQLException)
-      if(Add.isStudentInputBlank(newFirstName, newLastName)) {
-        System.err.println("FIELDS CANNOT BE BLANK");
+          // If the student ID exists in the database, don't create a new Student (throws a
+          // SQLException)
+          if (Add.isStudentInputBlank(newFirstName, newLastName)) {
+            System.err.println("FIELDS CANNOT BE BLANK");
 
-        // Give the user a warning if the input fields are blank
-        warningLabel.setText("Fields cannot be blank!");
+            // Give the user a warning if the input fields are blank
+            warningLabel.setText("Fields cannot be blank!");
 
-        // Play the fade in and fade out animations for the warning
-        fadeIn.play();
-        fadeOut.play();
-        canCreateStudent = false;
+            // Play the fade in and fade out animations for the warning
+            fadeIn.play();
+            fadeOut.play();
+            canCreateStudent = false;
 
-      } else if(Delete.getStudentId(newFirstName, newLastName) != null && Delete.getStudentId(newFirstName, newLastName) != 0) {
-        System.err.println("THAT STUDENT ALREADY EXISTS");
+          } else if (Delete.getStudentId(newFirstName, newLastName) != null
+              && Delete.getStudentId(newFirstName, newLastName) != 0) {
+            System.err.println("THAT STUDENT ALREADY EXISTS");
 
-        // Give the user a warning if they try to create a duplicate Student
-        warningLabel.setText("That student already exists!");
+            // Give the user a warning if they try to create a duplicate Student
+            warningLabel.setText("That student already exists!");
 
-        // Play the fade in and fade out animations for the warning
-        fadeIn.play();
-        fadeOut.play();
-        canCreateStudent = false;
-      }
+            // Play the fade in and fade out animations for the warning
+            fadeIn.play();
+            fadeOut.play();
+            canCreateStudent = false;
+          }
 
-      ListIterator<Student> studentListIterator = students.getItems().listIterator();
+          ListIterator<Student> studentListIterator = students.getItems().listIterator();
 
-      while (studentListIterator.hasNext()) {
-        Student currentStudent = studentListIterator.next();
+          while (studentListIterator.hasNext()) {
+            Student currentStudent = studentListIterator.next();
 
-        if (currentStudent.getFirstName().equalsIgnoreCase(newFirstName) && currentStudent.getLastName().equalsIgnoreCase(newLastName)) {
-          warningLabel.setText("That student already exists!");
+            if (currentStudent.getFirstName().equalsIgnoreCase(newFirstName)
+                && currentStudent.getLastName().equalsIgnoreCase(newLastName)) {
+              warningLabel.setText("That student already exists!");
 
-          fadeIn.play();
-          fadeOut.play();
+              fadeIn.play();
+              fadeOut.play();
 
-          canCreateStudent = false;
-        }
-      }
+              canCreateStudent = false;
+            }
+          }
 
-      if(canCreateStudent) {
-        // These are the labels for testing
-//        firstNameLabel.setText("First Name: " + studentFirstNameField.getText());
-//        lastNameLabel.setText("Last Name: " + studentLastNameField.getText());
+          if (canCreateStudent) {
+            // These are the labels for testing
+            //        firstNameLabel.setText("First Name: " + studentFirstNameField.getText());
+            //        lastNameLabel.setText("Last Name: " + studentLastNameField.getText());
 
-        Add.addStudent(newFirstName, newLastName);
-        Long studentId = Delete.getStudentId(newFirstName, newLastName);
-        students.getItems().add(new Student(studentId, newFirstName, newLastName));
-      }
-    });
+            Add.addStudent(newFirstName, newLastName);
+            Long studentId = Delete.getStudentId(newFirstName, newLastName);
+            students.getItems().add(new Student(studentId, newFirstName, newLastName));
+          }
+        });
 
     // Creating a button to let the user delete things from the database
     Button deleteButton = new Button("Delete");
     deleteButton.getStyleClass().add("delete-button");
 
     // Adding delete functionality to our deleteButton
-    deleteButton.setOnAction(e -> {
-      Student selectedStudent = students.getSelectionModel().getSelectedItem();
-      Long selectedStudentId = Delete.getStudentId(selectedStudent.getFirstName(), selectedStudent.getLastName());
+    deleteButton.setOnAction(
+        e -> {
+          Student selectedStudent = students.getSelectionModel().getSelectedItem();
+          Long selectedStudentId =
+              Delete.getStudentId(selectedStudent.getFirstName(), selectedStudent.getLastName());
 
-      students.getItems().remove(selectedStudent);
-      // Loop through the CompletedChapters TableView's Items and remove the ones with the same
-      // studentId as the student we're deleting
-      ListIterator<CompletedChapter> completedChapterIterator = completedChapters.getItems().listIterator();
+          students.getItems().remove(selectedStudent);
+          // Loop through the CompletedChapters TableView's Items and remove the ones with the same
+          // studentId as the student we're deleting
+          ListIterator<CompletedChapter> completedChapterIterator =
+              completedChapters.getItems().listIterator();
 
-      while (completedChapterIterator.hasNext()) {
-        CompletedChapter currentChapter = completedChapterIterator.next();
+          while (completedChapterIterator.hasNext()) {
+            CompletedChapter currentChapter = completedChapterIterator.next();
 
-        if(selectedStudentId != null && currentChapter.studentIdIsEqual(selectedStudentId)) {
-          completedChapterIterator.remove();
-        }
-      }
+            if (selectedStudentId != null && currentChapter.studentIdIsEqual(selectedStudentId)) {
+              completedChapterIterator.remove();
+            }
+          }
 
-      Delete.deleteStudent(selectedStudentId);
-    });
+          Delete.deleteStudent(selectedStudentId);
+        });
 
     // Create a VBox to store the Tab's contents
     final VBox vbox = new VBox();
@@ -152,9 +160,9 @@ public class StudentTab {
 
     // Add contents to our GridPane (uncomment the labels when testing)
     inputGrid.add(studentFirstNameField, 0, 0);
-    //inputGrid.add(firstNameLabel, 0, 1);
+    // inputGrid.add(firstNameLabel, 0, 1);
     inputGrid.add(studentLastNameField, 1, 0);
-    //inputGrid.add(lastNameLabel, 1, 1);
+    // inputGrid.add(lastNameLabel, 1, 1);
     inputGrid.add(submitButton, 2, 0);
     inputGrid.add(deleteButton, 3, 0);
     inputGrid.add(warningLabel, 4, 0);

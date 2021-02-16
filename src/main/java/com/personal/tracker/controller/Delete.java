@@ -6,14 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * This class handles all queries related to deleting something from the database.
- */
+/** This class handles all queries related to deleting something from the database. */
 public class Delete {
 
   /**
-   * This method deletes a chapter from the Chapter table, as well as the Student Progress table
-   * if it's been completed.
+   * This method deletes a chapter from the Chapter table, as well as the Student Progress table if
+   * it's been completed.
    *
    * @param chapterId The ID of the chapter to be removed.
    */
@@ -29,8 +27,9 @@ public class Delete {
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
-        "sa", "");
+      conn =
+          DriverManager.getConnection(
+              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       // Prepare the first query
       statement = conn.prepareStatement(sqlDeleteQuery);
@@ -68,8 +67,8 @@ public class Delete {
   }
 
   /**
-   * This method deletes a student from the Student table, as well as the Student Progress table
-   * if the student is present in that table.
+   * This method deletes a student from the Student table, as well as the Student Progress table if
+   * the student is present in that table.
    *
    * @param studentId The ID of the student being deleted.
    */
@@ -84,8 +83,9 @@ public class Delete {
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
-          "sa", "");
+      conn =
+          DriverManager.getConnection(
+              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       // Prepare the first query
       statement = conn.prepareStatement(sqlDeleteQuery);
@@ -111,6 +111,7 @@ public class Delete {
 
   /**
    * This is a helper function to get the ID of the student to be removed.
+   *
    * @param firstName The first name of the student we're searching for.
    * @param lastName The last name of the student we're searching for.
    * @return The ID if the student is found, null if the student isn't found.
@@ -122,13 +123,16 @@ public class Delete {
     Long studentId = null;
 
     // Initialize the string to hold the query
-    String sqlDeleteQuery = "SELECT (SELECT STUDENT_ID FROM STUDENT WHERE FIRST_NAME = ? AND LAST_NAME = ?) AS STUDENT_ID";
+    String sqlDeleteQuery =
+        "SELECT (SELECT STUDENT_ID FROM STUDENT WHERE FIRST_NAME = ? AND LAST_NAME = ?) AS"
+            + " STUDENT_ID";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
-          "sa", "");
+      conn =
+          DriverManager.getConnection(
+              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       // Prepare the first query
       statement = conn.prepareStatement(sqlDeleteQuery);
@@ -151,7 +155,7 @@ public class Delete {
       return studentId;
     } catch (SQLException sqle) {
       // If there's an Exception, print out the stack trace so we can figure out what's up
-      //sqle.printStackTrace();
+      // sqle.printStackTrace();
       System.err.println("There was an sqle exception");
       return null;
     } finally {
@@ -165,16 +169,18 @@ public class Delete {
     PreparedStatement statement;
 
     // Initialize the string to hold the query
-    String sqlDeleteQuery = "DELETE FROM STUDENT_PROGRESS " +
-        "WHERE STUDENT_ID = ?" +
-        "AND BOOK = ?" +
-        "AND CHAPTER_NUMBER = ?";
+    String sqlDeleteQuery =
+        "DELETE FROM STUDENT_PROGRESS "
+            + "WHERE STUDENT_ID = ?"
+            + "AND BOOK = ?"
+            + "AND CHAPTER_NUMBER = ?";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
-          "sa", "");
+      conn =
+          DriverManager.getConnection(
+              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       statement = conn.prepareStatement(sqlDeleteQuery);
       statement.setLong(1, studentId);

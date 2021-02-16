@@ -19,8 +19,8 @@ public class Add {
    * @param lastName The last name of the student who completed the chapter.
    * @param chapterNumber The ID of the chapter that's been completed.
    */
-  public static void addCompletedChapter(String firstName, String lastName, long chapterNumber,
-                                         String book) {
+  public static void addCompletedChapter(
+      String firstName, String lastName, long chapterNumber, String book) {
     LocalDate date = LocalDate.now();
 
     // Initialize the Connection and PreparedStatement objects
@@ -29,17 +29,18 @@ public class Add {
 
     // Initialize the string to hold the query
     String sqlQuery =
-      "INSERT INTO student_progress " +
-        "(STUDENT_ID, CHAPTER_NUMBER, COMPLETION_DATE, BOOK, CHAPTER_TITLE) " +
-        "VALUES " +
-        "((SELECT STUDENT_ID FROM student WHERE FIRST_NAME = ? AND LAST_NAME = ?), ?, ?, ?, " +
-          "(SELECT CHAPTER_TITLE FROM CHAPTER WHERE CHAPTER_NUMBER = ? AND BOOK = ?))";
+        "INSERT INTO student_progress "
+            + "(STUDENT_ID, CHAPTER_NUMBER, COMPLETION_DATE, BOOK, CHAPTER_TITLE) "
+            + "VALUES "
+            + "((SELECT STUDENT_ID FROM student WHERE FIRST_NAME = ? AND LAST_NAME = ?), ?, ?, ?, "
+            + "(SELECT CHAPTER_TITLE FROM CHAPTER WHERE CHAPTER_NUMBER = ? AND BOOK = ?))";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
-        "sa", "");
+      conn =
+          DriverManager.getConnection(
+              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.prepareStatement(sqlQuery);
@@ -81,16 +82,14 @@ public class Add {
 
     // Initialize the string to hold the query
     String sqlQuery =
-      "INSERT INTO CHAPTER" +
-        "(CHAPTER_NUMBER, CHAPTER_TITLE, BOOK)" +
-        "VALUES" +
-        "(?, ?, ?)";
+        "INSERT INTO CHAPTER" + "(CHAPTER_NUMBER, CHAPTER_TITLE, BOOK)" + "VALUES" + "(?, ?, ?)";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
-        "sa", "");
+      conn =
+          DriverManager.getConnection(
+              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.prepareStatement(sqlQuery);
@@ -127,23 +126,19 @@ public class Add {
     PreparedStatement statement;
 
     // Initialize the string to hold the query
-    String sqlQuery =
-        "INSERT INTO STUDENT" +
-            "(FIRST_NAME, LAST_NAME)" +
-            "VALUES" +
-            "(?, ?)";
+    String sqlQuery = "INSERT INTO STUDENT" + "(FIRST_NAME, LAST_NAME)" + "VALUES" + "(?, ?)";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
-          "sa", "");
+      conn =
+          DriverManager.getConnection(
+              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.prepareStatement(sqlQuery);
       statement.setString(1, firstName);
       statement.setString(2, lastName);
-
 
       // Execute the update and count the new rows
       int newRowCount = statement.executeUpdate();
@@ -169,39 +164,39 @@ public class Add {
 
     // Initialize the string to hold the query
     String studentTableQuery =
-        "CREATE TABLE STUDENT (" +
-            "STUDENT_ID LONG AUTO_INCREMENT PRIMARY KEY," +
-            "FIRST_NAME varchar(255) NOT NULL," +
-            "LAST_NAME varchar(255) NOT NULL" +
-            ")";
+        "CREATE TABLE STUDENT ("
+            + "STUDENT_ID LONG AUTO_INCREMENT PRIMARY KEY,"
+            + "FIRST_NAME varchar(255) NOT NULL,"
+            + "LAST_NAME varchar(255) NOT NULL"
+            + ")";
 
     String chapterTableQuery =
-        "CREATE TABLE CHAPTER (" +
-            "CHAPTER_ID LONG AUTO_INCREMENT PRIMARY KEY," +
-            "CHAPTER_NUMBER LONG NOT NULL," +
-            "CHAPTER_TITLE varchar(255) NOT NULL," +
-            "BOOK varchar(255) NOT NULL" +
-            ")";
+        "CREATE TABLE CHAPTER ("
+            + "CHAPTER_ID LONG AUTO_INCREMENT PRIMARY KEY,"
+            + "CHAPTER_NUMBER LONG NOT NULL,"
+            + "CHAPTER_TITLE varchar(255) NOT NULL,"
+            + "BOOK varchar(255) NOT NULL"
+            + ")";
 
     String completedChapterTableQuery =
-        "CREATE TABLE STUDENT_PROGRESS (" +
-            "STUDENT_ID LONG NOT NULL," +
-            "CHAPTER_NUMBER LONG NOT NULL," +
-            "CHAPTER_TITLE varchar(255) NOT NULL," +
-            "BOOK varchar(255) NOT NULL," +
-            "COMPLETION_DATE DATE NOT NULL," +
-            "FOREIGN KEY (STUDENT_ID) REFERENCES STUDENT(STUDENT_ID) ON DELETE CASCADE" +
-            ")";
+        "CREATE TABLE STUDENT_PROGRESS ("
+            + "STUDENT_ID LONG NOT NULL,"
+            + "CHAPTER_NUMBER LONG NOT NULL,"
+            + "CHAPTER_TITLE varchar(255) NOT NULL,"
+            + "BOOK varchar(255) NOT NULL,"
+            + "COMPLETION_DATE DATE NOT NULL,"
+            + "FOREIGN KEY (STUDENT_ID) REFERENCES STUDENT(STUDENT_ID) ON DELETE CASCADE"
+            + ")";
 
     // Try block (because jdbc methods can throw SQLException exceptions)
     try {
       // Make a connection to the database
-      conn = DriverManager.getConnection("jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker",
-          "sa", "");
+      conn =
+          DriverManager.getConnection(
+              "jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker", "sa", "");
 
       // Make a preparedStatement and fill in the blanks
       statement = conn.createStatement();
-
 
       // Execute the update and count the new rows
       int newRowCount = statement.executeUpdate(studentTableQuery);
@@ -232,11 +227,13 @@ public class Add {
     return firstName.isEmpty() || lastName.isEmpty();
   }
 
-  public static boolean isChapterInputBlank(Long chapterNum, String chapterTitle, String bookTitle) {
+  public static boolean isChapterInputBlank(
+      Long chapterNum, String chapterTitle, String bookTitle) {
     return chapterNum == null || chapterTitle.isEmpty() || bookTitle.isEmpty();
   }
 
-  public static boolean isCompletedChapterInputBlank(String firstName, String lastName, Long chapterNum, String bookTitle) {
+  public static boolean isCompletedChapterInputBlank(
+      String firstName, String lastName, Long chapterNum, String bookTitle) {
     return firstName.isEmpty() || lastName.isEmpty() || chapterNum == null || bookTitle.isEmpty();
   }
 }
