@@ -5,6 +5,7 @@ This is a progress tracker I'm making to track my progress throughout different 
 
 ## Table of Contents
 * [Pictures!](#pictures)
+* [Tech Used](#tech-used)
 * [Table Structure](#table-structure)
   * [Student Table](#student-table)
   * [Chapter Table](#chapter-table)
@@ -19,6 +20,10 @@ Here's the chapter tab!
 
 And here's the completed chapter tab!
 ![Image of the Completed Chapters Tab](media/Completed_Chapter_Screen.png)
+
+## Tech Used
+- Core Java 15
+- GUI Framework: JavaFX 15
 
 ## Table Structure
 The top levels have the column names and associated types
