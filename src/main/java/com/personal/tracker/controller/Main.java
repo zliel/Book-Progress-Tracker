@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 /**
  * This class executes the program, handling user input.
+ *
+ * @deprecated
  */
 public class Main {
   public static void primary(String[] args) {
@@ -42,6 +44,7 @@ public class Main {
    * chapters based on input.
    *
    * @param addScanner The Scanner object passed in by the main() method.
+   * @deprecated
    */
   public static void add(Scanner addScanner) {
     String firstName;
@@ -106,6 +109,7 @@ public class Main {
    * This method handles the "delete" command, letting the user remove chapters from the database.
    *
    * @param deleteScanner The Scanner object passed in by the main() method.
+   * @deprecated
    */
   public static void delete(Scanner deleteScanner) {
     // Get user input for what they want to delete (currently only "chapter" works)
@@ -166,6 +170,7 @@ public class Main {
    * chapters in the database.
    *
    * @param listScanner The Scanner object passed in by the main() method
+   * @deprecated
    */
   public static void list(Scanner listScanner) {
     // Get user input for what they would like to list

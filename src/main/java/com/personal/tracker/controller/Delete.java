@@ -12,13 +12,16 @@ import java.sql.SQLException;
 public class Delete {
 
   /**
-   * This method deletes a chapter from the Chapter table, as well as the Student Progress table
-   * if it's been completed.
+   * This method deletes a chapter from the <code>Chapter</code> table, as well as from the
+   * Student Progress table if it's been completed.
    *
-   * @param chapterId The ID of the chapter to be removed.
+   * @param chapterId The ID of the chapter to be removed. This is used in the query to select the
+                      book to be removed.
+   * @param book The title of the book to be removed. This is used in the query to select the book
+                 to be removed.
    */
   public static void deleteChapter(Long chapterId, String book) {
-    // Eventually I'll need to add another arg to include book id when the book table is made
+
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
     PreparedStatement statement;
@@ -68,10 +71,11 @@ public class Delete {
   }
 
   /**
-   * This method deletes a student from the Student table, as well as the Student Progress table
+   * This method deletes a student from the Student table, as well as from the Student Progress table
    * if the student is present in that table.
    *
-   * @param studentId The ID of the student being deleted.
+   * @param studentId The ID of the student being deleted. This is used in the query to select the
+                      student to be deleted.
    */
   public static void deleteStudent(Long studentId) {
     // Initialize the Connection and PreparedStatement objects
@@ -110,9 +114,12 @@ public class Delete {
   }
 
   /**
-   * This is a helper function to get the ID of the student to be removed.
-   * @param firstName The first name of the student we're searching for.
-   * @param lastName The last name of the student we're searching for.
+   * This is a helper function to get the ID of a student in the database.
+   *
+   * @param firstName The first name of the student we're searching for. This is used in the query
+                      to select the student whose ID we want.
+   * @param lastName The last name of the student we're searching for. This is used in the query to
+                     select the student whose ID we want.
    * @return The ID if the student is found, null if the student isn't found.
    */
   public static Long getStudentId(String firstName, String lastName) {
@@ -159,6 +166,17 @@ public class Delete {
     }
   }
 
+  /**
+   * This method handles deletes a completed chapter from the <code>Student_Progress</code> table
+   * in the database.
+   *
+   * @param studentId - ID of the student who we're removing the completed chapter from. This is
+   *                  used in the query to select the Completed Chapter to be removed.
+   * @param book - Book title of the book we're removing the completed chapter from. This is
+   *               used in the query to select the Completed Chapter to be removed.
+   * @param chapterNumber - The Chapter number of the chapter we're removing. This is
+   *                        used in the query to select the Completed Chapter to be removed.
+   */
   public static void deleteCompletedChapter(Long studentId, String book, Long chapterNumber) {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;

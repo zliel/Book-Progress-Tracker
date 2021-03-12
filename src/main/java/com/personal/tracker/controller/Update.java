@@ -5,7 +5,22 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * This class handles all queries related to updating existing data in the database.
+ */
 public class Update {
+
+  /**
+   * This method handles updating a student's first name in the <code>Student</code> and
+   * <code>Completed Chapters</code> tables. Before being passed to this method, the
+   * <code>newFirstName</code> param is validated and capitalized when updating the Student
+   * TableView in the Student Tab.
+   *
+   * @param newFirstName The new first name of the student. This is retrieved from the Student
+   *                     Tab's cell upon updating the TableView.
+   * @param id The ID of the student whose information we're updating, which will be retrieved
+   *           using the Delete.getStudentId() method
+   */
   public static void updateStudentFirstName(String newFirstName, Long id) {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
@@ -46,6 +61,17 @@ public class Update {
     }
   }
 
+  /**
+   * This method handles updating a student's first name in the <code>Student</code> and
+   * <code>Completed Chapters</code> tables. Before being passed to this method, the
+   * <code>newLastName</code> param is validated and capitalized when updating the Student
+   * TableView in the Student Tab.
+   *
+   * @param newLastName The new last name of the student. This is retrieved from the Student
+   *                     Tab's cell upon updating the TableView.
+   * @param id The ID of the student whose information we're updating, which will be retrieved
+   *           using the Delete.getStudentId() method
+   */
   public static void updateStudentLastName(String newLastName, Long id) {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
@@ -86,6 +112,22 @@ public class Update {
     }
   }
 
+  /**
+   * This method handles updating chapter number for a specified chapter in the
+   * <code>Chapter</code> table in the database. Before being passed to this method, the
+   * <code>oldChapterNumber</code> and <code>newChapterNumber</code> params are validated when
+   * updating the chapter number in the TableView in the Chapter Tab.
+   * <br><br>
+   * <strong>NOTE</strong>: This method updates the chapter number in both the <code>Chapter</code>
+   * and <code>Student_Progress</code> tables in the database.
+   *
+   * @param oldChapterNumber The chapter number previously associated with the chapter being
+   *                         changed. This is used in the query to select the specific chapter to
+   *                         be updated.
+   * @param newChapterNumber The chapter number replacing the old chapter number.
+   * @param bookTitle The title of the book the chapter belongs to. This is used in the query to
+   *                  select the specific chapter to be updated.
+   */
   public static void updateChapterNumber(long oldChapterNumber, long newChapterNumber, String bookTitle) {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
@@ -144,6 +186,21 @@ public class Update {
     }
   }
 
+  /**
+   * This method handles updating chapter title for a specified chapter in the
+   * <code>Chapter</code> table in the database. Before being passed to this method, the
+   * <code>newChapterTitle</code> and <code>oldChapterTitle</code> params are validated and
+   * capitalized when updating the chapter title in the TableView in the Chapter Tab.
+   * <br><br>
+   * <strong>NOTE</strong>: This method updates the chapter title in both the <code>Chapter</code>
+   * and <code>Student_Progress</code> tables in the database.
+   *
+   * @param newChapterTitle The chapter title replacing the old chapter title.
+   * @param oldChapterTitle The chapter title previously associated with the chapter. This is
+   *                        used in the query to select the specific chapter to be updated.
+   * @param bookTitle The title of the book the chapter belongs to. This is used in the query to
+   *                  select the specific chapter to be updated.
+   */
   public static void updateChapterTitle(String newChapterTitle, String oldChapterTitle, String bookTitle) {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
@@ -202,6 +259,19 @@ public class Update {
     }
   }
 
+  /**
+   * This method handles updating book title for a specified book in the
+   * <code>Chapter</code> table in the database. Before being passed to this method, the
+   * <code>oldBookTitle</code> and <code>newBookTitle</code> params are validated and
+   * capitalized when updating the chapter title in the TableView in the Chapter Tab.
+   * <br><br>
+   * <strong>NOTE</strong>: This method updates the book title in both the <code>Chapter</code>
+   * and <code>Student_Progress</code> tables in the database.
+   *
+   * @param oldBookTitle The book title previously associated with the book. This
+   *                     is used in the query to select the specific book to be updated.
+   * @param newBookTitle The book title replacing the old book title.
+   */
   public static void updateBookTitle(String oldBookTitle, String newBookTitle) {
     // Initialize the Connection and PreparedStatement objects
     Connection conn;
