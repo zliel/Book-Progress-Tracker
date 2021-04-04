@@ -7,8 +7,7 @@
     <session-factory>
         <!-- Database connection settings -->
         <property name="connection.driver_class">org.h2.Driver</property>
-        <property name="connection.url">"jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker";
-            DB_CLOSE_DELAY=-1;MVCC=TRUE</property>
+        <property name="connection.url">jdbc:h2:~/h2Databases/StudentTrackerDB/StudentTracker;</property>
         <property name="connection.username">sa</property>
         <property name="connection.password"/>
 
@@ -19,7 +18,7 @@
         <property name="show_sql">true</property>
 
         <!-- Update an existing database or create new tables rather than start clean at start-up -->
-        <property name="hbm2ddl.auto">update</property>
+        <property name="hbm2ddl.auto">create</property>
     </session-factory>
 
 </hibernate-configuration>
