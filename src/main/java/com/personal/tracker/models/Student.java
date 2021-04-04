@@ -1,9 +1,14 @@
 package com.personal.tracker.models;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Student {
+  @Id
+  private Long id;
   private String firstName;
   private String lastName;
-  private Long id;
 
   public Student(Long studentId, String firstName, String lastName) {
     this.id = studentId;
@@ -30,4 +35,13 @@ public class Student {
   public Long getId() { return id; }
 
   public void setId(Long id) { this.id = id; }
+
+
+  @Override
+  public String toString() {
+    return "Student(" +
+        "id = " + id + ", " +
+        "firstName = " + firstName + ", " +
+        "lastName = " + lastName + ")";
+  }
 }

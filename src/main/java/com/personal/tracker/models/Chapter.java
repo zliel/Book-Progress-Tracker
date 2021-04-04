@@ -1,7 +1,17 @@
 package com.personal.tracker.models;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Chapter {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long chapterId;
+
   private Long chapterKey;
   private String chapterTitle;
   private String bookTitle;
@@ -42,5 +52,14 @@ public class Chapter {
 
   public void setBookTitle(String bookTitle) {
     this.bookTitle = bookTitle;
+  }
+
+  @Override
+  public String toString() {
+    return "Chapter(" +
+        "chapterId = " + chapterId + ", " +
+        "chapterKey = " + chapterKey + ", " +
+        "chapterTitle = " + chapterTitle + ", " +
+        "bookTitle = " + bookTitle + ")";
   }
 }

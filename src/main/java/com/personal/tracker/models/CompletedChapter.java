@@ -1,9 +1,17 @@
 package com.personal.tracker.models;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Date;
 
+@Entity
 public class CompletedChapter {
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long studentId;
+
   private Long chapterNumber;
   private Date completionDate;
   private String chapterTitle;
@@ -65,4 +73,13 @@ public class CompletedChapter {
     return (chapterNum.equals(getChapterNumber()) && book.equals(getBookTitle()));
   }
 
+  @Override
+  public String toString() {
+    return "CompletedChapter(" +
+        "studentId = " + studentId + ", " +
+        "chapterNumber = " + chapterNumber + ", " +
+        "completionDate = " + completionDate + ", " +
+        "chapterTitle = " + chapterTitle + ", " +
+        "bookTitle = " + bookTitle + ")";
+  }
 }
