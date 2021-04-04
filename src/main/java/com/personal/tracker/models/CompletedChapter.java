@@ -10,19 +10,30 @@ import java.util.Date;
 public class CompletedChapter {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long studentId;
+  private Long completedChapterId;
 
+  private Long studentId;
   private Long chapterNumber;
   private Date completionDate;
   private String chapterTitle;
   private String bookTitle;
 
-  public CompletedChapter(Long studentId, Long chapterNumber, Date completionDate, String bookTitle, String chapterTitle) {
+  public CompletedChapter(Long completedChapterId, Long studentId, Long chapterNumber,
+                          Date completionDate,
+                          String bookTitle, String chapterTitle) {
     this.studentId = studentId;
     this.chapterNumber = chapterNumber;
     this.completionDate = completionDate;
     this.chapterTitle = chapterTitle;
     this.bookTitle = bookTitle;
+  }
+
+  public Long getCompletedChapterId() {
+    return completedChapterId;
+  }
+
+  public void setCompletedChapterId(Long completedChapterId) {
+    this.completedChapterId = completedChapterId;
   }
 
   public Long getStudentId() {
