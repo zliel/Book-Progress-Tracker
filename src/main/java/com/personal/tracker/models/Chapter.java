@@ -12,12 +12,12 @@ public class Chapter {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long chapterId;
 
-  private Long chapterKey;
+  private Long chapterNum;
   private String chapterTitle;
   private String bookTitle;
 
-  public Chapter(Long chapterKey, String chapterTitle, String bookTitle) {
-    this.chapterKey = chapterKey;
+  public Chapter(Long chapterNum, String chapterTitle, String bookTitle) {
+    this.chapterNum = chapterNum;
     this.chapterTitle = chapterTitle;
     this.bookTitle = bookTitle;
   }
@@ -30,12 +30,12 @@ public class Chapter {
     this.chapterId = chapterId;
   }
 
-  public Long getChapterKey() {
-    return chapterKey;
+  public Long getChapterNum() {
+    return chapterNum;
   }
 
-  public void setChapterKey(Long chapterKey) {
-    this.chapterKey = chapterKey;
+  public void setChapterNum(Long chapterKey) {
+    this.chapterNum = chapterKey;
   }
 
   public String getChapterTitle() {
@@ -58,7 +58,7 @@ public class Chapter {
   public String toString() {
     return "Chapter(" +
         "chapterId = " + chapterId + ", " +
-        "chapterKey = " + chapterKey + ", " +
+        "chapterNum = " + chapterNum + ", " +
         "chapterTitle = " + chapterTitle + ", " +
         "bookTitle = " + bookTitle + ")";
   }
