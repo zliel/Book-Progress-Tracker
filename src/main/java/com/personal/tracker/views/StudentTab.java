@@ -1,7 +1,5 @@
 package com.personal.tracker.views;
 
-import com.personal.tracker.controller.Add;
-import com.personal.tracker.controller.Delete;
 import com.personal.tracker.models.CompletedChapter;
 import com.personal.tracker.models.Student;
 import javafx.animation.FadeTransition;
@@ -66,7 +64,7 @@ public class StudentTab {
       testQuery.setParameter("lastName", newLastName);
       Long id = (Long) testQuery.uniqueResult();
       // If the student ID exists in the database, don't create a new Student (throws a SQLException)
-      if(Add.isStudentInputBlank(newFirstName, newLastName)) {
+      if(newFirstName.isBlank() || newLastName.isBlank()) {
         System.err.println("FIELDS CANNOT BE BLANK");
 
         // Give the user a warning if the input fields are blank
@@ -122,7 +120,8 @@ public class StudentTab {
     // Adding delete functionality to our deleteButton
     deleteButton.setOnAction(e -> {
       Student selectedStudent = students.getSelectionModel().getSelectedItem();
-      Long selectedStudentId = Delete.getStudentId(selectedStudent.getFirstName(), selectedStudent.getLastName());
+      Long selectedStudentId = selectedStudent.getId();
+      System.out.println("SELECTED STUDENT ID: " + selectedStudentId);
 
       students.getItems().remove(selectedStudent);
       // Loop through the CompletedChapters TableView's Items and remove the ones with the same
@@ -132,12 +131,12 @@ public class StudentTab {
       while (completedChapterIterator.hasNext()) {
         CompletedChapter currentChapter = completedChapterIterator.next();
 
-        if(selectedStudentId != null && currentChapter.studentIdIsEqual(selectedStudentId)) {
+        if(selectedStudentId != null && currentChapter.getStudentId().equals(selectedStudentId)) {
           completedChapterIterator.remove();
         }
       }
 
-      Delete.deleteStudent(selectedStudentId);
+      session.delete(selectedStudent);
     });
 
     // Create a VBox to store the Tab's contents
