@@ -1,7 +1,5 @@
 package com.personal.tracker.views;
 
-import com.personal.tracker.controller.Add;
-import com.personal.tracker.controller.Delete;
 import com.personal.tracker.models.Chapter;
 import com.personal.tracker.models.CompletedChapter;
 import javafx.animation.FadeTransition;
@@ -11,11 +9,14 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.apache.commons.text.WordUtils;
+import org.hibernate.Session;
 
 import java.util.ListIterator;
 
 public class ChaptersTab {
-  public static Tab createChaptersTab(TableView<Chapter> chapters, TableView<CompletedChapter> completedChapters) {
+  public static Tab createChaptersTab(TableView<Chapter> chapters,
+                                      TableView<CompletedChapter> completedChapters,
+                                      Session session) {
     //Make input fields for each necessary piece of information for the database
     TextField chapterTitleField = new TextField();
     chapterTitleField.setPromptText("Chapter Title");
@@ -73,13 +74,16 @@ public class ChaptersTab {
       while (completedChapterIterator.hasNext()) {
         CompletedChapter currentChapter = completedChapterIterator.next();
 
-        if(currentChapter.chapterIsEqual(selectedChapter.getChapterKey(), currentChapter.getBookTitle())) {
+        if(currentChapter.getChapterNumber().equals(selectedChapter.getChapterNum()) && currentChapter.getBookTitle().equals(selectedChapter.getBookTitle())) {
           completedChapterIterator.remove();
         }
       }
 
       // Remove the Chapter from the database
-      Delete.deleteChapter(selectedChapter.getChapterKey(), selectedChapter.getBookTitle());
+//      Delete.deleteChapter(selectedChapter.getChapterNum(), selectedChapter.getBookTitle());
+      session.delete(selectedChapter);
+      session.getTransaction().commit();
+      session.beginTransaction();
     });
 
     // Handle when the button is clicked
@@ -96,18 +100,18 @@ public class ChaptersTab {
       while (chapterListIterator.hasNext()) {
         Chapter currentChapter = chapterListIterator.next();
 
-        if (currentChapter.getChapterKey().equals(chapterNum) && currentChapter.getChapterTitle().equalsIgnoreCase(chapterTitle) && currentChapter.getBookTitle().equalsIgnoreCase(bookTitle)) {
+        if (currentChapter.getChapterNum().equals(chapterNum) && currentChapter.getChapterTitle().equalsIgnoreCase(chapterTitle) && currentChapter.getBookTitle().equalsIgnoreCase(bookTitle)) {
           System.err.println("THAT CHAPTER ALREADY EXISTS");
           // Make a warning label for this to show the user
           chapterExists = true;
-        } else if (currentChapter.getChapterKey().equals(chapterNum) && currentChapter.getBookTitle().equalsIgnoreCase(bookTitle)) {
+        } else if (currentChapter.getChapterNum().equals(chapterNum) && currentChapter.getBookTitle().equalsIgnoreCase(bookTitle)) {
           System.err.printf("CHAPTER %d IN BOOK %s ALREADY EXISTS\n", chapterNum, bookTitle);
           // Make a warning label for this to show the user
           chapterExists = true;
         }
       }
 
-      if(Add.isChapterInputBlank(chapterNum, chapterTitle, bookTitle)) {
+      if(chapterNum <= 0 || chapterTitle.isBlank() || bookTitle.isBlank()) {
         System.err.println("FIELDS CANNOT BE BLANK");
 
         // Give the user a warning if the input fields are blank
@@ -124,10 +128,13 @@ public class ChaptersTab {
 //        bookTitleLabel.setText("Book Title: " + bookTitleField.getText());
 
         // Add the Chapter to the database
-        Add.addChapter(chapterNum, chapterTitle, bookTitle);
+        Chapter newChapter = new Chapter(chapterNum, chapterTitle, bookTitle);
+        session.save(newChapter);
+        session.getTransaction().commit();
+        session.beginTransaction();
 
         // Add the chapter to the TableView (to the underlying ObservableList)
-        chapters.getItems().add(new Chapter(chapterNum, chapterTitle, bookTitle));
+        chapters.getItems().add(newChapter);
       } else {
         // Give the user a warning message when they try to create a duplicate Chapter
         warningLabel.setText("That chapter already exists!");
