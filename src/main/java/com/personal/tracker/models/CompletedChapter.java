@@ -18,7 +18,7 @@ public class CompletedChapter {
   private String chapterTitle;
   private String bookTitle;
 
-  public CompletedChapter(Long completedChapterId, Long studentId, Long chapterNumber,
+  public CompletedChapter(Long studentId, Long chapterNumber,
                           Date completionDate,
                           String bookTitle, String chapterTitle) {
     this.studentId = studentId;
@@ -74,14 +74,6 @@ public class CompletedChapter {
 
   public void setBookTitle(String bookTitle) {
     this.bookTitle = bookTitle;
-  }
-
-  public boolean studentIdIsEqual(Long studentId) {
-    return studentId.equals(getStudentId());
-  }
-
-  public boolean chapterIsEqual(Long chapterNum, String book) {
-    return (chapterNum.equals(getChapterNumber()) && book.equals(getBookTitle()));
   }
 
   @Override
