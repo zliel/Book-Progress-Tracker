@@ -7,7 +7,12 @@ import java.sql.SQLException;
 
 /**
  * This class handles all queries related to updating existing data in the database.
+ *
+ * @deprecated
+ * In the next complete version of the tracker, it will have migrated to Hibernate
+ * rather than JDBC
  */
+@Deprecated(forRemoval = true)
 public class Update {
 
   /**

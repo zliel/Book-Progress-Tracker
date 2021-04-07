@@ -1,13 +1,15 @@
 package com.personal.tracker.controller;
 
 import java.util.Scanner;
-// DEPRECATED - WON'T BE USED IN THE GUI VERSION
 
 /**
  * This class executes the program, handling user input.
  *
  * @deprecated
+ * This will be removed in the next version, which will have changed entirely to using a
+ * GUI and Hibernate
  */
+@Deprecated(forRemoval = true)
 public class Main {
   public static void primary(String[] args) {
     // Initialize Scanner object for user input
