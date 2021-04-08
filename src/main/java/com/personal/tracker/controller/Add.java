@@ -9,7 +9,11 @@ import java.time.LocalDate;
  * @author Zac Liel
  * @version 0.1
  * @since 12-31-2020
+ * @deprecated
+ * In the next complete version of the tracker, it will have migrated to Hibernate
+ * rather than JDBC
  */
+@Deprecated(forRemoval = true)
 public class Add {
 
   /**

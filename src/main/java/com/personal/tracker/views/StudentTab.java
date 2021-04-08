@@ -1,7 +1,5 @@
 package com.personal.tracker.views;
 
-import com.personal.tracker.controller.Add;
-import com.personal.tracker.controller.Delete;
 import com.personal.tracker.models.CompletedChapter;
 import com.personal.tracker.models.Student;
 import javafx.animation.FadeTransition;
@@ -12,9 +10,13 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import java.util.ListIterator;
 import org.apache.commons.text.WordUtils;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 public class StudentTab {
-  public static Tab createStudentTab(TableView<Student> students, TableView<CompletedChapter> completedChapters) {
+  public static Tab createStudentTab(TableView<Student> students,
+                                     TableView<CompletedChapter> completedChapters,
+                                     Session session) {
     // Make input fields for each necessary piece of information for the database
     TextField studentFirstNameField = new TextField();
     studentFirstNameField.setPromptText("Student First Name");
@@ -56,8 +58,13 @@ public class StudentTab {
 
       boolean canCreateStudent = true;
 
+      Query studentQuery = session.createQuery("select id from Student s where " +
+          "s.firstName=:firstName AND s.lastName=:lastName");
+      studentQuery.setParameter("firstName", newFirstName);
+      studentQuery.setParameter("lastName", newLastName);
+      Long id = (Long) studentQuery.uniqueResult();
       // If the student ID exists in the database, don't create a new Student (throws a SQLException)
-      if(Add.isStudentInputBlank(newFirstName, newLastName)) {
+      if(newFirstName.isBlank() || newLastName.isBlank()) {
         System.err.println("FIELDS CANNOT BE BLANK");
 
         // Give the user a warning if the input fields are blank
@@ -68,7 +75,7 @@ public class StudentTab {
         fadeOut.play();
         canCreateStudent = false;
 
-      } else if(Delete.getStudentId(newFirstName, newLastName) != null && Delete.getStudentId(newFirstName, newLastName) != 0) {
+      } else if(id != null && id != 0) {
         System.err.println("THAT STUDENT ALREADY EXISTS");
 
         // Give the user a warning if they try to create a duplicate Student
@@ -99,10 +106,9 @@ public class StudentTab {
         // These are the labels for testing
 //        firstNameLabel.setText("First Name: " + studentFirstNameField.getText());
 //        lastNameLabel.setText("Last Name: " + studentLastNameField.getText());
-
-        Add.addStudent(newFirstName, newLastName);
-        Long studentId = Delete.getStudentId(newFirstName, newLastName);
-        students.getItems().add(new Student(studentId, newFirstName, newLastName));
+        Student newStudent = new Student(newFirstName, newLastName);
+        session.save(newStudent);
+        students.getItems().add(newStudent);
       }
     });
 
@@ -113,7 +119,8 @@ public class StudentTab {
     // Adding delete functionality to our deleteButton
     deleteButton.setOnAction(e -> {
       Student selectedStudent = students.getSelectionModel().getSelectedItem();
-      Long selectedStudentId = Delete.getStudentId(selectedStudent.getFirstName(), selectedStudent.getLastName());
+      Long selectedStudentId = selectedStudent.getId();
+      System.out.println("SELECTED STUDENT ID: " + selectedStudentId);
 
       students.getItems().remove(selectedStudent);
       // Loop through the CompletedChapters TableView's Items and remove the ones with the same
@@ -123,12 +130,12 @@ public class StudentTab {
       while (completedChapterIterator.hasNext()) {
         CompletedChapter currentChapter = completedChapterIterator.next();
 
-        if(selectedStudentId != null && currentChapter.studentIdIsEqual(selectedStudentId)) {
+        if(selectedStudentId != null && currentChapter.getStudentId().equals(selectedStudentId)) {
           completedChapterIterator.remove();
         }
       }
 
-      Delete.deleteStudent(selectedStudentId);
+      session.delete(selectedStudent);
     });
 
     // Create a VBox to store the Tab's contents

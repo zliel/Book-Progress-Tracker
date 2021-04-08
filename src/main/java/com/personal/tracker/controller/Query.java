@@ -19,7 +19,11 @@ import java.util.Date;
  * @author Zac Liel
  * @version 0.1
  * @since 12-31-2020
+ * @deprecated
+ * In the next complete version of the tracker, it will have migrated to Hibernate
+ * rather than JDBC
  */
+@Deprecated(forRemoval = true)
 public class Query {
 
   /**
@@ -174,7 +178,7 @@ public class Query {
         studentId = results.getLong(1);
         studentFirstName = results.getString(2);
         studentLastName = results.getString(3);
-        studentResults.add(new Student(studentId, studentFirstName, studentLastName));
+        studentResults.add(new Student(studentFirstName, studentLastName));
       }
 
       // Cleanup - close the ResultSet object to free up resources
@@ -232,8 +236,8 @@ public class Query {
         completionDate = results.getDate("COMPLETION_DATE");
         bookTitle = results.getString("BOOK");
         chapterTitle = results.getString("CHAPTER_TITLE");
-        completedChapters.add(new CompletedChapter(studentId, chapterId, completionDate,
-            bookTitle, chapterTitle));
+//        completedChapters.add(new CompletedChapter(1L, studentId, chapterId, completionDate,
+//            bookTitle, chapterTitle));
 //        System.out.printf("%s \t", results.getDate("COMPLETION_DATE").toString());
 //        System.out.printf("%d \t|", results.getLong("CHAPTER_NUMBER"));
 //        System.out.printf("%-55s \t|", results.getString("CHAPTER_TITLE"));

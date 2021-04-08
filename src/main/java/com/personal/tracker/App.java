@@ -1,8 +1,5 @@
 package com.personal.tracker;
 
-import com.personal.tracker.controller.Add;
-import com.personal.tracker.controller.Query;
-import com.personal.tracker.controller.Update;
 import com.personal.tracker.models.Chapter;
 import com.personal.tracker.models.CompletedChapter;
 import com.personal.tracker.models.Student;
@@ -20,50 +17,62 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.converter.LongStringConverter;
 import org.apache.commons.text.WordUtils;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.query.Query;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.util.Scanner;
 
 public class App extends Application {
+
+  // We configure and build the registry for our Session objects using the hibernate.cfg.xml file
+  private final static StandardServiceRegistry registry =
+      new StandardServiceRegistryBuilder().configure().build();
+  private final static MetadataSources sources = new MetadataSources(registry);
+  private static Session persistenceSession;
 
   @Override
   public void start(Stage stage) {
     // Check the config file to see if the database exists
-    initialize();
+    persistenceSession = initialize();
+    persistenceSession.beginTransaction();
 
     // Create our initial tables
-    TableView<Student> studentTable = createStudentTable();
+    TableView<Student> studentTable = createStudentTable(persistenceSession);
     studentTable.setEditable(true);
-    TableView<CompletedChapter> completedChaptersTable = createCompletedChaptersTable();
+    TableView<CompletedChapter> completedChaptersTable = createCompletedChaptersTable(persistenceSession);
     completedChaptersTable.setEditable(true);
-    TableView<Chapter> chapterTable = createChapterTable(completedChaptersTable);
+    TableView<Chapter> chapterTable = createChapterTable(completedChaptersTable, persistenceSession);
     chapterTable.setEditable(true);
 
     // Create a tabPane to choose which part of the database to view
     TabPane tabs = new TabPane();
 
     // Create tabs
-    Tab studentTab = StudentTab.createStudentTab(studentTable, completedChaptersTable);
+    Tab studentTab = StudentTab.createStudentTab(studentTable, completedChaptersTable, persistenceSession);
     studentTab.setOnSelectionChanged(event -> {
-      studentTab.setContent(StudentTab.createStudentTab(studentTable, completedChaptersTable).getContent());
+      studentTab.setContent(StudentTab.createStudentTab(studentTable, completedChaptersTable,
+          persistenceSession).getContent());
     });
 
-    Tab chapterTab = ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable);
+    Tab chapterTab = ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable, persistenceSession);
     chapterTab.setOnSelectionChanged(event -> {
-      chapterTab.setContent(ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable).getContent());
+      chapterTab.setContent(ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable,
+          persistenceSession).getContent());
     });
 
-    Tab completedChaptersTab = CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable);
+    Tab completedChaptersTab =
+        CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable,
+            studentTable, persistenceSession);
 
     // Reset the content of the Completed Chapters Tab each time the tab is selected so that if a user enters a new book into
     // the Chapters table, it will be added to the ComboBox in the Completed Chapters Tab
     completedChaptersTab.setOnSelectionChanged(event -> {
-      completedChaptersTab.setContent(CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable).getContent());
+      completedChaptersTab.setContent(CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable,studentTable, persistenceSession).getContent());
     });
 
     // Add the tabs to the TabPane
@@ -81,58 +90,37 @@ public class App extends Application {
     stage.setTitle("Book Progress Tracker");
     stage.setScene(scene);
     stage.show();
+
   }
 
   public static void main(String[] args) {
     launch();
   }
 
-  public static void initialize() {
-    try {
-      File config = new File("settings.txt");
-      if(!config.exists()) {
-        throw new FileNotFoundException("The file doesn't exist.");
-      }
-      Scanner configReader = new Scanner(config);
-
-      while(configReader.hasNextLine()) {
-        String data = configReader.nextLine();
-        if(data.equals("database_exists==False")) {
-          Add.createDatabase();
-        }
-        System.out.println(data);
-      }
-    } catch (FileNotFoundException fnf) {
-      File newConfig = new File("settings.txt");
-
-      try {
-        Add.createDatabase();
-        FileWriter configWriter = new FileWriter(newConfig);
-        configWriter.write("database_exists==True");
-        configWriter.flush();
-        configWriter.close();
-
-      } catch (IOException ioe) {
-        System.err.println("There was an IOException: " + ioe);
-      }
-    }
+  public static Session initialize() {
+    // Configure our MetadataSources and SessionFactory, and return our newly opened Session
+    sources.addAnnotatedClasses(Student.class, Chapter.class, CompletedChapter.class).getMetadataBuilder().build();
+    SessionFactory sessionFactory = sources.buildMetadata().buildSessionFactory();
+    return sessionFactory.openSession();
   }
 
   @SuppressWarnings("unchecked")
-  public static TableView<Student> createStudentTable() {
-    // Move what's in start() here
+  public static TableView<Student> createStudentTable(Session session) {
     // Create a TableView for our database output
     TableView<Student> studentTable = new TableView<>();
 
+    //HQL Query to retrieve all students in the database
+    Query studentQuery = session.createQuery("from Student");
+
     // Get an ArrayList with students from the database
-    ArrayList<Student> students = Query.listStudents();
+    ArrayList<Student> students = new ArrayList<>(studentQuery.list());
 
     // Create an observable list for reactivity later
     ObservableList<Student> list = FXCollections.observableList(students);
     studentTable.setItems(list);
 
     // Set the columns' titles and data (the data comes from the Student.java file in the
-    // com.personal.tracker.models package
+    // com.personal.tracker.models package)
     TableColumn<Student, Long> idCol = new TableColumn<>("ID");
     idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
 
@@ -143,9 +131,9 @@ public class App extends Application {
       Student studentToChange = studentTable.getSelectionModel().getSelectedItem();
       String updatedFirstName = WordUtils.capitalizeFully(event.getNewValue());
 
-      Update.updateStudentFirstName(updatedFirstName, studentToChange.getId());
       studentToChange.setFirstName(updatedFirstName);
-      studentTable.setItems(createStudentTable().getItems());
+      session.save(studentToChange);
+      studentTable.setItems(createStudentTable(session).getItems());
     });
 
     TableColumn<Student, String> lastNameCol = new TableColumn<>("Last Name");
@@ -155,9 +143,9 @@ public class App extends Application {
       Student studentToChange = studentTable.getSelectionModel().getSelectedItem();
       String updatedLastName = WordUtils.capitalizeFully(event.getNewValue());
 
-      Update.updateStudentLastName(updatedLastName, studentToChange.getId());
       studentToChange.setLastName(updatedLastName);
-      studentTable.setItems(createStudentTable().getItems());
+      session.save(studentToChange);
+      studentTable.setItems(createStudentTable(session).getItems());
     });
 
     // Set the data in the table
@@ -166,22 +154,25 @@ public class App extends Application {
   }
 
   @SuppressWarnings("unchecked")
-  public static TableView<Chapter> createChapterTable(TableView<CompletedChapter> completedChapterTable) {
+  public static TableView<Chapter> createChapterTable(TableView<CompletedChapter> completedChapterTable, Session session) {
     // Create a TableView for our database output
     TableView<Chapter> chapterTable = new TableView<>();
 
-    // Get an ArrayList with students from the database
-    ArrayList<Chapter> students = Query.listChapters();
+    // HQL Query to retrieve all chapters from the database
+    Query chapterQuery = session.createQuery("from Chapter");
+
+    // Get an ArrayList with chapters from the database
+    ArrayList<Chapter> chapters = new ArrayList<Chapter>(chapterQuery.list());
 
     // Create an observable list for reactivity later
-    ObservableList<Chapter> list = FXCollections.observableList(students);
+    ObservableList<Chapter> list = FXCollections.observableList(chapters);
     chapterTable.setItems(list);
 
-    // Set the columns' titles and data (the data comes from the Student.java file in the
+    // Set the columns' titles and data (the data comes from the Chapter.java file in the
     // com.personal.tracker.models package
 
     TableColumn<Chapter, Long> chapterNumCol = new TableColumn<>("Chapter Number");
-    chapterNumCol.setCellValueFactory(new PropertyValueFactory<>("chapterKey"));
+    chapterNumCol.setCellValueFactory(new PropertyValueFactory<>("chapterNum"));
     chapterNumCol.setCellFactory(TextFieldTableCell.forTableColumn(new LongStringConverter()));
     chapterNumCol.setOnEditCommit(event -> {
       // This is the flag we'll use to determine whether or not the user's input is valid
@@ -193,20 +184,37 @@ public class App extends Application {
 
       // Make sure the chapter number doesn't already exist
       for(Chapter currentChapter : list) {
-        if((!currentChapter.equals(chapterToChange)) && currentChapter.getChapterKey().equals(updatedChapterNum) && currentChapter.getBookTitle().equalsIgnoreCase(chapterToChange.getBookTitle())) {
+        if((!currentChapter.equals(chapterToChange)) && currentChapter.getChapterNum().equals(updatedChapterNum) && currentChapter.getBookTitle().equalsIgnoreCase(chapterToChange.getBookTitle())) {
           System.err.println("THAT CHAPTER NUMBER ALREADY EXISTS");
           inputIsValid = false;
-
-          chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
         }
       }
 
       // If our input is valid, we update the database and tables
       if(inputIsValid) {
-        Update.updateChapterNumber(oldChapterNum, updatedChapterNum, chapterToChange.getBookTitle());
-        chapterToChange.setChapterKey(updatedChapterNum);
-        chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
-        completedChapterTable.setItems(createCompletedChaptersTable().getItems());
+        chapterToChange.setChapterNum(updatedChapterNum);
+        session.save(chapterToChange);
+
+        // Retrieve all completed chapters with the same book title as the one being changed
+        Query completedChapterBookQuery = session.createQuery("from CompletedChapter cc " +
+            "where " +
+            "chapterNumber=:oldNum AND bookTitle=:bookTitle");
+        completedChapterBookQuery.setParameter("oldNum", oldChapterNum);
+        completedChapterBookQuery.setParameter("bookTitle", chapterToChange.getBookTitle());
+
+        // Loop through the returned completed chapters and update their book titles accordingly
+        ArrayList<CompletedChapter> completedChapters = new ArrayList<>(completedChapterBookQuery.list());
+        for(CompletedChapter currentCC : completedChapters) {
+          currentCC.setChapterNumber(updatedChapterNum);
+          session.save(currentCC);
+        }
+
+        completedChapterTable.refresh();
+        chapterTable.refresh();
+
+      } else {
+        // If the new chapter number already exists, reset the chapter table to its previous state
+        chapterTable.refresh();
       }
     });
 
@@ -223,20 +231,32 @@ public class App extends Application {
       String oldChapterTitle = event.getOldValue();
 
       // Make sure the chapter number doesn't already exist
-      for(Chapter currentChapter : list) {
-        if((!currentChapter.equals(chapterToChange)) && currentChapter.getChapterTitle().equals(updatedChapterTitle) && currentChapter.getBookTitle().equalsIgnoreCase(chapterToChange.getBookTitle())) {
-          System.err.println("THAT CHAPTER NUMBER ALREADY EXISTS");
-          inputIsValid = false;
-
-          chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
-        }
+      if(updatedChapterTitle.isBlank()) {
+        System.err.println("THE NEW CHAPTER TITLE CAN'T BE BLANK");
+        inputIsValid = false;
       }
 
       // If our input is valid, we update the database and tables
       if(inputIsValid) {
-        Update.updateChapterTitle(updatedChapterTitle, oldChapterTitle, chapterToChange.getBookTitle());
         chapterToChange.setChapterTitle(updatedChapterTitle);
-        chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
+        session.save(chapterToChange);
+
+        Query completedChapterBookQuery = session.createQuery("from CompletedChapter cc " +
+            "where " +
+            "chapterTitle=:oldTitle");
+        completedChapterBookQuery.setParameter("oldTitle", oldChapterTitle);
+
+        ArrayList<CompletedChapter> completedChapters = new ArrayList<>(completedChapterBookQuery.list());
+
+        for(CompletedChapter currentCC : completedChapters) {
+          currentCC.setChapterTitle(updatedChapterTitle);
+          session.save(currentCC);
+        }
+
+        completedChapterTable.refresh();
+        chapterTable.refresh();
+      } else {
+        chapterTable.refresh();
       }
     });
 
@@ -253,21 +273,49 @@ public class App extends Application {
       String updatedBookTitle = WordUtils.capitalizeFully(event.getNewValue());
       String oldBookTitle = event.getOldValue();
 
-      // Make sure the chapter number doesn't already exist
+      // Make sure the new title isn't an empty string
       for(Chapter currentChapter : list) {
-        if((!currentChapter.equals(chapterToChange)) && currentChapter.getBookTitle().equalsIgnoreCase(oldBookTitle)) {
-          System.err.println("THAT CHAPTER NUMBER ALREADY EXISTS");
+        if(updatedBookTitle.isBlank()) {
+          System.err.println("THE NEW TITLE CAN'T BE BLANK");
           inputIsValid = false;
 
-          chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
+          chapterTable.setItems(createChapterTable(completedChapterTable, session).getItems());
         }
       }
 
       // If our input is valid, we update the database and tables
       if(inputIsValid) {
-        Update.updateBookTitle(oldBookTitle, updatedBookTitle);
-        chapterToChange.setBookTitle(updatedBookTitle);
-        chapterTable.setItems(createChapterTable(completedChapterTable).getItems());
+        // Loop through the chapters in the table and change all of the matching book titles to
+        // the new one
+        for(Chapter currentChapter : list) {
+          if(currentChapter.getBookTitle().equals(oldBookTitle)) {
+            currentChapter.setBookTitle(updatedBookTitle);
+            session.save(currentChapter);
+          }
+        }
+
+        // Loop through the completed chapters in the database and change matching old book
+        // titles to the new one
+        Query completedChapterBookQuery = session.createQuery("from CompletedChapter cc where bookTitle=:oldTitle");
+        completedChapterBookQuery.setParameter("oldTitle", oldBookTitle);
+
+        ArrayList<CompletedChapter> completedChapters = new ArrayList<>(completedChapterBookQuery.list());
+
+        for(CompletedChapter currentCC : completedChapters) {
+          currentCC.setBookTitle(updatedBookTitle);
+          session.save(currentCC);
+        }
+
+        // Commit the transaction to ensure the objects are no longer in the persistence state
+        // and have fully saved to the database
+        session.getTransaction().commit();
+        session.beginTransaction();
+
+        // Refresh the tables to reflect the changes made
+        completedChapterTable.refresh();
+        chapterTable.refresh();
+      } else {
+        chapterTable.refresh();
       }
     });
 
@@ -277,18 +325,22 @@ public class App extends Application {
   }
 
   @SuppressWarnings("unchecked")
-  public static TableView<CompletedChapter> createCompletedChaptersTable() {
+  public static TableView<CompletedChapter> createCompletedChaptersTable(Session session) {
     // Create a TableView for our database output
     TableView<CompletedChapter> completedChaptersTable = new TableView<>();
 
+    // HQL Query to retrieve all completed chapters
+    Query completedChapterQuery = session.createQuery("from CompletedChapter");
+
     // Get an ArrayList with students from the database
-    ArrayList<CompletedChapter> completedChapters = Query.listCompletedChapters();
+    ArrayList<CompletedChapter> completedChapters = new ArrayList<>(completedChapterQuery.list());
+
 
     // Create an observable list for reactivity later
     ObservableList<CompletedChapter> list = FXCollections.observableArrayList(completedChapters);
     completedChaptersTable.setItems(list);
 
-    // Set the columns' titles and data (the data comes from the Student.java file in the
+    // Set the columns' titles and data (the data comes from the CompletedChapter.java file in the
     // com.personal.tracker.models package
     TableColumn<CompletedChapter, Long> studentIdCol = new TableColumn<>("Student ID");
     studentIdCol.setCellValueFactory(new PropertyValueFactory<>("studentId"));
@@ -308,7 +360,9 @@ public class App extends Application {
 
   @Override
   public void stop() {
+    persistenceSession.getTransaction().commit();
+    persistenceSession.close();
     // This should include anything to be done at the end of the program's lifecycle
-    System.out.println("We did it");
+    System.out.println("Mission Success");
   }
 }
