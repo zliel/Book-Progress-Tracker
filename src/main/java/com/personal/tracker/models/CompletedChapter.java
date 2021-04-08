@@ -18,6 +18,8 @@ public class CompletedChapter {
   private String chapterTitle;
   private String bookTitle;
 
+  public CompletedChapter() {}
+
   public CompletedChapter(Long studentId, Long chapterNumber,
                           Date completionDate,
                           String bookTitle, String chapterTitle) {

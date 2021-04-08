@@ -16,6 +16,8 @@ public class Chapter {
   private String chapterTitle;
   private String bookTitle;
 
+  public Chapter() {}
+
   public Chapter(Long chapterNum, String chapterTitle, String bookTitle) {
     this.chapterNum = chapterNum;
     this.chapterTitle = chapterTitle;
