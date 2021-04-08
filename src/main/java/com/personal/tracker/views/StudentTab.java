@@ -58,11 +58,11 @@ public class StudentTab {
 
       boolean canCreateStudent = true;
 
-      Query testQuery = session.createQuery("select id from Student s where " +
+      Query studentQuery = session.createQuery("select id from Student s where " +
           "s.firstName=:firstName AND s.lastName=:lastName");
-      testQuery.setParameter("firstName", newFirstName);
-      testQuery.setParameter("lastName", newLastName);
-      Long id = (Long) testQuery.uniqueResult();
+      studentQuery.setParameter("firstName", newFirstName);
+      studentQuery.setParameter("lastName", newLastName);
+      Long id = (Long) studentQuery.uniqueResult();
       // If the student ID exists in the database, don't create a new Student (throws a SQLException)
       if(newFirstName.isBlank() || newLastName.isBlank()) {
         System.err.println("FIELDS CANNOT BE BLANK");
@@ -107,7 +107,6 @@ public class StudentTab {
 //        firstNameLabel.setText("First Name: " + studentFirstNameField.getText());
 //        lastNameLabel.setText("Last Name: " + studentLastNameField.getText());
         Student newStudent = new Student(newFirstName, newLastName);
-//        Add.addStudent(newFirstName, newLastName);
         session.save(newStudent);
         students.getItems().add(newStudent);
       }
