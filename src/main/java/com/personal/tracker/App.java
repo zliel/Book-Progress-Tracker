@@ -45,29 +45,11 @@ public class App extends Application {
 
     TabPane tabs = new TabPane();
 
-    // Create tabs and reset their content each time the user changes tabs
+    // Create tabs and add them to the TabPane
     Tab studentTab = StudentTab.createStudentTab(studentTable, completedChaptersTable, persistenceSession);
-    studentTab.setOnSelectionChanged(event ->
-      studentTab.setContent(StudentTab.createStudentTab(studentTable, completedChaptersTable, persistenceSession)
-                .getContent())
-    );
-
     Tab chapterTab = ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable, persistenceSession);
-    chapterTab.setOnSelectionChanged(event ->
-      chapterTab.setContent(ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable, persistenceSession)
-                .getContent())
-    );
-
     Tab completedChaptersTab =
-        CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable,
-            studentTable, persistenceSession);
-
-    completedChaptersTab.setOnSelectionChanged(event ->
-        completedChaptersTab.setContent(CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable,studentTable, persistenceSession)
-                            .getContent())
-    );
-
-    // Add the tabs to the TabPane
+        CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable, studentTable, persistenceSession);
     tabs.getTabs().addAll(studentTab, chapterTab, completedChaptersTab);
 
     // Create and style our scene
