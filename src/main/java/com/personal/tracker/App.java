@@ -105,7 +105,8 @@ public class App extends Application {
     return FXCollections.observableList(query.list());
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("unchecked") // Using the addAll() method for TableColumns will always result
+  // in an "Unchecked generics array creation for varargs parameter" warning
   public static TableView<Student> createStudentTable(Session session) {
     TableView<Student> studentTable = new TableView<>();
 
@@ -143,7 +144,8 @@ public class App extends Application {
     return studentTable;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("unchecked") // Using the addAll() method for TableColumns will always result
+  // in an "Unchecked generics array creation for varargs parameter" warning
   public static TableView<Chapter> createChapterTable(TableView<CompletedChapter> completedChapterTable, Session session) {
     TableView<Chapter> chapterTable = new TableView<>();
 
@@ -291,8 +293,8 @@ public class App extends Application {
     return chapterTable;
   }
 
-  @SuppressWarnings("unchecked") // Setting all of the columns of the table at the same time will
-  // always throw an unchecked warning
+  @SuppressWarnings("unchecked") // Using the addAll() method for TableColumns will always result
+  // in an "Unchecked generics array creation for varargs parameter" warning
   public static TableView<CompletedChapter> createCompletedChaptersTable(Session session) {
     TableView<CompletedChapter> completedChaptersTable = new TableView<>();
 
