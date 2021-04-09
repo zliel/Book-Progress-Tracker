@@ -49,7 +49,8 @@ public class App extends Application {
     Tab studentTab = StudentTab.createStudentTab(studentTable, completedChaptersTable, persistenceSession);
     Tab chapterTab = ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable, persistenceSession);
     Tab completedChaptersTab =
-        CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable, studentTable, persistenceSession);
+        CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable, persistenceSession);
+    completedChaptersTab.setOnSelectionChanged(event -> completedChaptersTab.setContent(CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable, persistenceSession).getContent()));
     tabs.getTabs().addAll(studentTab, chapterTab, completedChaptersTab);
 
     // Create and style our scene
@@ -77,11 +78,10 @@ public class App extends Application {
     return sessionFactory.openSession();
   }
 
-  @SuppressWarnings("unchecked")
-  // Because the type isn't known at compile time, an unchecked assignment warning will always show
+  @SuppressWarnings("unchecked") // Because the type isn't known at compile time, an unchecked
+  // assignment warning will always show
   public static <E> ObservableList<E> createObservableList(Class<E> type, Session session) {
-    System.out.println("Type: " + type);
-    System.out.println("Type Class Simple Name: " + type.getSimpleName());
+    System.out.println("Type of observable list being made: " + type.getSimpleName());
     Query<E> query = session.createQuery("from " + type.getSimpleName());
 
     return FXCollections.observableList(query.list());
@@ -215,6 +215,7 @@ public class App extends Application {
         }
 
         completedChapterTable.refresh();
+        chapterTable.refresh();
       }
 
       chapterTable.refresh();
