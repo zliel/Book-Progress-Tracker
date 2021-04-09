@@ -210,12 +210,10 @@ public class App extends Application {
         }
 
         completedChapterTable.refresh();
-        chapterTable.refresh();
 
-      } else {
-        // If the new chapter number already exists, reset the chapter table to its previous state
-        chapterTable.refresh();
       }
+
+      chapterTable.refresh();
     });
 
 
@@ -254,10 +252,9 @@ public class App extends Application {
         }
 
         completedChapterTable.refresh();
-        chapterTable.refresh();
-      } else {
-        chapterTable.refresh();
       }
+
+      chapterTable.refresh();
     });
 
     TableColumn<Chapter, String> bookTitleCol = new TableColumn<>("Book Title");
@@ -313,10 +310,9 @@ public class App extends Application {
 
         // Refresh the tables to reflect the changes made
         completedChapterTable.refresh();
-        chapterTable.refresh();
-      } else {
-        chapterTable.refresh();
       }
+
+      chapterTable.refresh();
     });
 
     // Set the data in the table
