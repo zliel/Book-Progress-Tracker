@@ -47,24 +47,25 @@ public class App extends Application {
 
     // Create tabs and reset their content each time the user changes tabs
     Tab studentTab = StudentTab.createStudentTab(studentTable, completedChaptersTable, persistenceSession);
-    studentTab.setOnSelectionChanged(event -> {
-      studentTab.setContent(StudentTab.createStudentTab(studentTable, completedChaptersTable,
-          persistenceSession).getContent());
-    });
+    studentTab.setOnSelectionChanged(event ->
+      studentTab.setContent(StudentTab.createStudentTab(studentTable, completedChaptersTable, persistenceSession)
+                .getContent())
+    );
 
     Tab chapterTab = ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable, persistenceSession);
-    chapterTab.setOnSelectionChanged(event -> {
-      chapterTab.setContent(ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable,
-          persistenceSession).getContent());
-    });
+    chapterTab.setOnSelectionChanged(event ->
+      chapterTab.setContent(ChaptersTab.createChaptersTab(chapterTable, completedChaptersTable, persistenceSession)
+                .getContent())
+    );
 
     Tab completedChaptersTab =
         CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable,
             studentTable, persistenceSession);
 
-    completedChaptersTab.setOnSelectionChanged(event -> {
-      completedChaptersTab.setContent(CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable,studentTable, persistenceSession).getContent());
-    });
+    completedChaptersTab.setOnSelectionChanged(event ->
+        completedChaptersTab.setContent(CompletedChapterTab.createCompletedChaptersTab(completedChaptersTable, chapterTable,studentTable, persistenceSession)
+                            .getContent())
+    );
 
     // Add the tabs to the TabPane
     tabs.getTabs().addAll(studentTab, chapterTab, completedChaptersTab);
@@ -95,12 +96,21 @@ public class App extends Application {
   }
 
   @SuppressWarnings("unchecked")
+  // Because the type isn't known at compile time, an unchecked assignment warning will always show
+  public static <E> ObservableList<E> createObservableList(Class<E> type, Session session) {
+    System.out.println("Type: " + type);
+    System.out.println("Type Class Simple Name: " + type.getSimpleName());
+    Query<E> query = session.createQuery("from " + type.getSimpleName());
+
+    return FXCollections.observableList(query.list());
+  }
+
+  @SuppressWarnings("unchecked")
   public static TableView<Student> createStudentTable(Session session) {
     TableView<Student> studentTable = new TableView<>();
 
     // Query the database for all students to fill the table
-    Query studentQuery = session.createQuery("from Student");
-    ObservableList<Student> list = FXCollections.observableList(studentQuery.list());
+    ObservableList<Student> list = createObservableList(Student.class, session);
     studentTable.setItems(list);
 
     TableColumn<Student, Long> idCol = new TableColumn<>("ID");
@@ -138,9 +148,7 @@ public class App extends Application {
     TableView<Chapter> chapterTable = new TableView<>();
 
     // Query the database for all chapters to fill the table
-    Query chapterQuery = session.createQuery("from Chapter");
-    ArrayList<Chapter> chapters = new ArrayList<Chapter>(chapterQuery.list());
-    ObservableList<Chapter> list = FXCollections.observableList(chapters);
+    ObservableList<Chapter> list = createObservableList(Chapter.class, session);
     chapterTable.setItems(list);
 
     TableColumn<Chapter, Long> chapterNumCol = new TableColumn<>("Chapter Number");
@@ -167,7 +175,7 @@ public class App extends Application {
         session.save(chapterToChange);
 
         // Retrieve all completed chapters with the same book title as the one being changed
-        Query completedChapterBookQuery = session.createQuery("from CompletedChapter cc " +
+        Query<CompletedChapter> completedChapterBookQuery = session.createQuery("from CompletedChapter cc " +
             "where " +
             "chapterNumber=:oldNum AND bookTitle=:bookTitle");
         completedChapterBookQuery.setParameter("oldNum", oldChapterNum);
@@ -175,7 +183,7 @@ public class App extends Application {
 
         // Loop through the returned completed chapters and update their book titles accordingly
         ArrayList<CompletedChapter> completedChapters =
-            new ArrayList<CompletedChapter>(completedChapterBookQuery.list());
+            new ArrayList<>(completedChapterBookQuery.list());
 
         for(CompletedChapter currentCC : completedChapters) {
           currentCC.setChapterNumber(updatedChapterNum);
@@ -209,12 +217,13 @@ public class App extends Application {
         chapterToChange.setChapterTitle(updatedChapterTitle);
         session.save(chapterToChange);
 
-        Query completedChapterBookQuery = session.createQuery("from CompletedChapter cc " +
+        Query<CompletedChapter> completedChapterBookQuery = session.createQuery("from CompletedChapter cc " +
             "where " +
             "chapterTitle=:oldTitle");
         completedChapterBookQuery.setParameter("oldTitle", oldChapterTitle);
 
-        ArrayList<CompletedChapter> completedChapters = new ArrayList<>(completedChapterBookQuery.list());
+        ArrayList<CompletedChapter> completedChapters =
+            new ArrayList<>(completedChapterBookQuery.list());
 
         for(CompletedChapter currentCC : completedChapters) {
           currentCC.setChapterTitle(updatedChapterTitle);
@@ -256,7 +265,9 @@ public class App extends Application {
 
         // Loop through the completed chapters in the database and change matching old book
         // titles to the new one
-        Query completedChapterBookQuery = session.createQuery("from CompletedChapter cc where bookTitle=:oldTitle");
+        Query<CompletedChapter> completedChapterBookQuery = session.createQuery("from CompletedChapter cc " +
+            "where " +
+            "bookTitle=:oldTitle");
         completedChapterBookQuery.setParameter("oldTitle", oldBookTitle);
 
         ArrayList<CompletedChapter> completedChapters = new ArrayList<>(completedChapterBookQuery.list());
@@ -280,15 +291,13 @@ public class App extends Application {
     return chapterTable;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("unchecked") // Setting all of the columns of the table at the same time will
+  // always throw an unchecked warning
   public static TableView<CompletedChapter> createCompletedChaptersTable(Session session) {
     TableView<CompletedChapter> completedChaptersTable = new TableView<>();
 
     // Query the database for all completed chapters to fill the table
-    Query completedChapterQuery = session.createQuery("from CompletedChapter");
-    ArrayList<CompletedChapter> completedChapters = new ArrayList<>(completedChapterQuery.list());
-
-    ObservableList<CompletedChapter> list = FXCollections.observableArrayList(completedChapters);
+    ObservableList<CompletedChapter> list = createObservableList(CompletedChapter.class, session);
     completedChaptersTable.setItems(list);
 
     // Set the columns' titles and data
