@@ -26,17 +26,7 @@ public class CompletedChapterTab {
                                                TableView<Chapter> chapters,
                                                Session session) {
     // Generate the list of books from the chapter table
-    ArrayList<String> books = new ArrayList<>();
-    books.add("");
-    for(Chapter currentChapter : chapters.getItems()) {
-      if (!books.contains(currentChapter.getBookTitle())) {
-        books.add(currentChapter.getBookTitle());
-      }
-      if(books.size() >= 1) {
-        books.remove("");
-      }
-    }
-    ObservableList<String> bookList = FXCollections.observableList(books);
+    ObservableList<String> bookList = generateBookList(chapters);
 
     // Components for creating new completed chapters
     TextField studentFirstNameField = new TextField();
@@ -195,5 +185,23 @@ public class CompletedChapterTab {
     completedChaptersTab.setContent(vbox);
 
     return completedChaptersTab;
+  }
+
+  public static ObservableList<String> generateBookList(TableView<Chapter> chapterTable) {
+    ArrayList<String> books = new ArrayList<>();
+    // Because the creation of a new completed chapter without any chapters existing crashes the
+    // program, we need to add an empty string to the list initially, and remove it if any
+    // chapters already exist
+    books.add("");
+    for(Chapter currentChapter : chapterTable.getItems()) {
+      if (!books.contains(currentChapter.getBookTitle())) {
+        books.add(currentChapter.getBookTitle());
+      }
+      if(books.size() >= 1) {
+        books.remove("");
+      }
+    }
+
+    return FXCollections.observableList(books);
   }
 }
