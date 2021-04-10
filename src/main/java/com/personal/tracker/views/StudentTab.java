@@ -55,7 +55,7 @@ public class StudentTab {
 
       // Query the database to ensure that the student being created doesn't already exist
       Query<Long> studentQuery = session.createQuery("select id from Student s where " +
-          "s.firstName=:firstName AND s.lastName=:lastName");
+          "s.firstName=:firstName AND s.lastName=:lastName", Long.class);
       studentQuery.setParameter("firstName", newFirstName);
       studentQuery.setParameter("lastName", newLastName);
       Long id = studentQuery.uniqueResult();

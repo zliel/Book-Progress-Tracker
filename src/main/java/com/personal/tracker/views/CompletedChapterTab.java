@@ -91,7 +91,7 @@ public class CompletedChapterTab {
           Query<?> completedChapterQuery = session.createQuery("select chapterTitle from " +
               "Chapter c " +
               "where " +
-              "c.chapterNum=:chapterNum AND c.bookTitle=:bookTitle");
+              "c.chapterNum=:chapterNum AND c.bookTitle=:bookTitle", String.class);
           completedChapterQuery.setParameter("chapterNum", chapterNum);
           completedChapterQuery.setParameter("bookTitle", bookTitle);
           String chapterTitle = (String) completedChapterQuery.uniqueResult();
@@ -101,7 +101,7 @@ public class CompletedChapterTab {
 
           // Query the database for the student's ID using their first and last name
           completedChapterQuery = session.createQuery("select id from Student s where " +
-              "firstName=:firstName AND lastName=:lastName");
+              "firstName=:firstName AND lastName=:lastName", Long.class);
           completedChapterQuery.setParameter("firstName", studentFirstName);
           completedChapterQuery.setParameter("lastName", studentLastName);
           Long studentId = (Long) completedChapterQuery.uniqueResult();
@@ -139,6 +139,8 @@ public class CompletedChapterTab {
         } catch (SQLException sqle) {
           sqle.printStackTrace();
           warningLabel.setText(sqle.getMessage());
+          fadeIn.play();
+          fadeOut.play();
         }
       }
     });

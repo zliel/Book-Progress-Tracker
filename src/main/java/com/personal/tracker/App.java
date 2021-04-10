@@ -87,7 +87,7 @@ public class App extends Application {
     return FXCollections.observableList(query.list());
   }
 
-  @SuppressWarnings("unchecked") // Using the addAll() method for TableColumns will always result
+  @SuppressWarnings("unchecked") // Using the setAll() method for TableColumns will always result
   // in an "Unchecked generics array creation for varargs parameter" warning
   public static TableView<Student> createStudentTable(Session session) {
     TableView<Student> studentTable = new TableView<>();
@@ -126,7 +126,7 @@ public class App extends Application {
     return studentTable;
   }
 
-  @SuppressWarnings("unchecked") // Using the addAll() method for TableColumns will always result
+  @SuppressWarnings("unchecked") // Using the setAll() method for TableColumns will always result
   // in an "Unchecked generics array creation for varargs parameter" warning
   public static TableView<Chapter> createChapterTable(TableView<CompletedChapter> completedChapterTable, Session session) {
     TableView<Chapter> chapterTable = new TableView<>();
@@ -161,7 +161,7 @@ public class App extends Application {
         // Retrieve all completed chapters with the same book title as the one being changed
         Query<CompletedChapter> completedChapterBookQuery = session.createQuery("from CompletedChapter cc " +
             "where " +
-            "chapterNumber=:oldNum AND bookTitle=:bookTitle");
+            "chapterNumber=:oldNum AND bookTitle=:bookTitle", CompletedChapter.class);
         completedChapterBookQuery.setParameter("oldNum", oldChapterNum);
         completedChapterBookQuery.setParameter("bookTitle", chapterToChange.getBookTitle());
 
@@ -203,7 +203,7 @@ public class App extends Application {
 
         Query<CompletedChapter> completedChapterBookQuery = session.createQuery("from CompletedChapter cc " +
             "where " +
-            "chapterTitle=:oldTitle");
+            "chapterTitle=:oldTitle", CompletedChapter.class);
         completedChapterBookQuery.setParameter("oldTitle", oldChapterTitle);
 
         ArrayList<CompletedChapter> completedChapters =
@@ -252,7 +252,7 @@ public class App extends Application {
         // titles to the new one
         Query<CompletedChapter> completedChapterBookQuery = session.createQuery("from CompletedChapter cc " +
             "where " +
-            "bookTitle=:oldTitle");
+            "bookTitle=:oldTitle", CompletedChapter.class);
         completedChapterBookQuery.setParameter("oldTitle", oldBookTitle);
 
         ArrayList<CompletedChapter> completedChapters = new ArrayList<>(completedChapterBookQuery.list());
@@ -276,7 +276,7 @@ public class App extends Application {
     return chapterTable;
   }
 
-  @SuppressWarnings("unchecked") // Using the addAll() method for TableColumns will always result
+  @SuppressWarnings("unchecked") // Using the setAll() method for TableColumns will always result
   // in an "Unchecked generics array creation for varargs parameter" warning
   public static TableView<CompletedChapter> createCompletedChaptersTable(Session session) {
     TableView<CompletedChapter> completedChaptersTable = new TableView<>();
